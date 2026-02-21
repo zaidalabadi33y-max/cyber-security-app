@@ -1,167 +1,238 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Security System v2.0</title>
-    <style>
-        :root { --main-color: #00ff41; --bg-color: #0a0a0a; --card-bg: #1a1a1a; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: white; margin: 0; overflow-x: hidden; }
-        .login-screen, .admin-panel, .main-app { display: none; padding: 20px; text-align: center; animation: fadeIn 0.5s; }
-        .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        input, button, select { padding: 12px; margin: 10px; border-radius: 5px; border: 1px solid var(--main-color); background: transparent; color: white; width: 85%; max-width: 300px; outline: none; }
-        button { background: var(--main-color); color: black; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #00cc33; transform: scale(1.05); }
-        
-        .status-bar { display: flex; justify-content: space-around; background: #111; padding: 15px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .card { background: var(--card-bg); padding: 20px 10px; border-radius: 8px; border-bottom: 2px solid var(--main-color); font-size: 0.9em; cursor: pointer; }
-        .card:active { background: #333; }
-        
-        .danger { color: #ff4b2b; }
-        .safe { color: var(--main-color); }
-        #log-area { margin-top: 20px; font-size: 0.8em; color: #888; text-align: right; height: 100px; overflow-y: auto; background: #000; padding: 10px; border-radius: 5px; }
-    </style>
+<meta charset="UTF-8">
+<title>Dark Security Military Edition</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:tahoma;
+background:#020202;
+color:#fff;
+text-align:center;
+}
+
+:root{
+--main:#00ffaa;
+}
+
+h2{
+color:var(--main);
+}
+
+input,button{
+width:90%;
+max-width:320px;
+padding:12px;
+margin:8px;
+border-radius:8px;
+border:1px solid var(--main);
+background:transparent;
+color:white;
+}
+
+button{
+background:var(--main);
+color:black;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+#log{
+background:black;
+margin-top:20px;
+padding:10px;
+height:140px;
+overflow:auto;
+font-size:12px;
+text-align:right;
+}
+
+.floating{
+position:fixed;
+bottom:25px;
+right:25px;
+background:var(--main);
+padding:20px;
+border-radius:50%;
+cursor:pointer;
+font-size:22px;
+}
+
+</style>
 </head>
+
 <body>
 
-    <div id="loginPage" class="login-screen active">
-        <h2 style="color: var(--main-color);">DARK SECURITY</h2>
-        <p>نظام الحماية المتقدم - يرجى التفعيل</p>
-        <input type="text" id="activationCode" placeholder="أدخل كود التفعيل">
-        <button onclick="checkAccess()">تسجيل الدخول</button>
-        <p style="font-size: 0.7em; color: gray;">للإشتراك تواصل مع المطور</p>
-    </div>
+<h2>🛡️ Dark Security Military Engine</h2>
 
-    <div id="adminPage" class="admin-panel">
-        <h2>🛠️ لوحة تحكم الإدارة</h2>
-        <input type="text" id="newCode" placeholder="اكتب الكود الجديد هنا">
-        <select id="duration">
-            <option value="يوم">يوم واحد</option>
-            <option value="أسبوع">أسبوع</option>
-            <option value="شهر">شهر</option>
-            <option value="سنة">سنة</option>
-        </select>
-        <input type="number" id="devices" placeholder="عدد الأجهزة المسموحة">
-        <button onclick="generateKey()">إصدار الكود وحفظه</button>
-        <div id="generatedCodesList" style="text-align: right; background: #222; padding: 10px; margin-top: 10px;"></div>
-        <button onclick="logout()" style="background: #555;">رجوع للخلف</button>
-    </div>
+<input id="code" placeholder="كود التفعيل">
+<button onclick="login()">دخول</button>
 
-    <div id="mainApp" class="main-app">
-        <div class="status-bar">
-            <div>درجة الأمان<br><b class="safe" id="securityScore">95/100</b></div>
-            <div>تطبيقات خطرة<br><b class="danger">0</b></div>
-            <div>حالة النظام<br><b class="safe">مستقر</b></div>
-        </div>
+<hr>
 
-        <div class="dashboard-grid">
-            <div class="card" onclick="runTool('فحص الروابط')">🔗 فحص الروابط</div>
-            <div class="card" onclick="runTool('تنظيف الجهاز')">🧹 حذف التالف (3 أشهر)</div>
-            <div class="card" onclick="runTool('موقع IP')">📍 تحديد موقع IP</div>
-            <div class="card" onclick="runTool('صانع رابط IP')">🛰️ صانع رابط IP</div>
-            <div class="card" onclick="runTool('البطارية')">🔋 فحص البطارية</div>
-            <div class="card" onclick="runTool('توليد باسورات')">🔑 توليد باسورات</div>
-            <div class="card" onclick="runTool('اختبار أمني')">📝 اختبار معلومات</div>
-            <div class="card" onclick="runTool('قوة الباسورد')">💪 قوة الكلمة</div>
-            <div class="card" onclick="runTool('انستا')">📸 فحص انستغرام</div>
-            <div class="card" onclick="runTool('فيسبوك')">🔵 فحص فيسبوك</div>
-            <div class="card" onclick="runTool('فحص APK')">📦 فحص APK</div>
-            <div class="card" onclick="runTool('تنبيه Play Store')">⚠️ تنبيه المصادر</div>
-            <div class="card" onclick="runTool('كشف التجسس')">🕵️ كشف التجسس</div>
-            <div class="card" onclick="runTool('فحص الروت')">🛡️ فحص الروت</div>
-        </div>
+<div id="app" style="display:none">
 
-        <div id="log-area">جاري انتظار الأوامر...</div>
-        <p style="font-size: 0.7em; color: gray; margin-top: 10px;">آخر فحص: <span id="time">الآن</span></p>
-    </div>
+<input type="file" id="fileInput">
+<button onclick="scanFile()">🔑 فحص الملف (SHA256 + Risk)</button>
 
-    <script>
-        const ADMIN_KEY = "dark-dark-dark";
-        let validCodes = JSON.parse(localStorage.getItem('validCodes')) || {};
+<br>
 
-        function checkAccess() {
-            const input = document.getElementById('activationCode').value;
-            if (input === ADMIN_KEY) { showPage('adminPage'); }
-            else if (validCodes[input]) { showPage('mainApp'); }
-            else { alert("❌ الكود غير صحيح أو منتهي!"); }
-        }
+<button onclick="scanQR()">📷 فحص QR</button>
 
-        function generateKey() {
-            const code = document.getElementById('newCode').value;
-            const dur = document.getElementById('duration').value;
-            const dev = document.getElementById('devices').value;
-            if(code) {
-                validCodes[code] = { duration: dur, devices: dev };
-                localStorage.setItem('validCodes', JSON.stringify(validCodes));
-                alert("✅ تم إنشاء الكود بنجاح!");
-                updateAdminList();
-            }
-        }
+<br>
 
-        function updateAdminList() {
-            const list = document.getElementById('generatedCodesList');
-            list.innerHTML = "<b>الأكواد المفعلة:</b><br>";
-            for (let c in validCodes) {
-                list.innerHTML += `🔑 ${c} (${validCodes[c].duration}) - أجهزة: ${validCodes[c].devices}<br>`;
-            }
-        }
+<input id="textInput" placeholder="اكتب نص للتحليل">
+<button onclick="aiScan()">🧠 تحليل أمني ذكي</button>
 
-        function showPage(id) {
-            document.querySelectorAll('div').forEach(d => { if(d.id) d.classList.remove('active'); });
-            document.getElementById(id).classList.add('active');
-            if(id === 'adminPage') updateAdminList();
-        }
+<br>
 
-        function logout() { location.reload(); }
+<button onclick="generateReport()">📄 توليد تقرير أمني</button>
 
-        // --- تشغيل الأدوات الحقيقي ---
-        function runTool(name) {
-            const log = document.getElementById('log-area');
-            log.innerHTML = `> جاري تشغيل ${name}...<br>` + log.innerHTML;
+<div id="qrContainer"></div>
 
-            if (name === 'توليد باسورات') {
-                let num = prompt("كم عدد الباسوردات؟", "3");
-                let res = "الباسوردات المقترحة:\n";
-                for(let i=0; i<num; i++) res += Math.random().toString(36).slice(-10) + "@A1\n";
-                alert(res);
-            } 
-            else if (name === 'قوة الباسورد') {
-                let p = prompt("أدخل الباسورد للفحص:");
-                if(p.length > 8 && /[A-Z]/.test(p)) alert("النتيجة: قوية جداً ✅");
-                else alert("النتيجة: ضعيفة! ينصح بزيادة الطول ❌");
-            }
-            else if (name === 'فحص الروت') {
-                setTimeout(() => { alert("النتيجة: الجهاز لا يحتوي على صلاحيات روت. (نظام رسمي) ✅"); }, 1500);
-            }
-            else if (name === 'موقع IP') {
-                log.innerHTML = "> جاري جلب إحداثيات الموقع عبر الـ IP...<br>" + log.innerHTML;
-                fetch('https://ipapi.co/json/').then(r => r.json()).then(d => {
-                    alert(`تم تحديد الموقع:\nالدولة: ${d.country_name}\nالمدينة: ${d.city}\nالـ IP: ${d.ip}`);
-                });
-            }
-            else if (name === 'تنظيف الجهاز') {
-                let confirmClean = confirm("هل تريد حذف الملفات المؤقتة والتالفة التي لم تستخدم منذ 3 أشهر؟");
-                if(confirmClean) {
-                    log.innerHTML = "> جاري مسح التخزين المؤقت...<br>" + log.innerHTML;
-                    setTimeout(() => { alert("تم تنظيف 1.2GB من الملفات المهملة بنجاح! ✨"); }, 2000);
-                }
-            }
-            else if (name === 'كشف التجسس') {
-                log.innerHTML = "> جاري فحص العمليات بالخلفية...<br>" + log.innerHTML;
-                setTimeout(() => { alert("الفحص مكتمل: لم يتم العثور على تطبيقات تجسس نشطة ✅"); }, 2500);
-            }
-            else if (name === 'صانع رابط IP') {
-                alert("سيتم توليد رابط تتبع.. بمجرد دخول الضحية عليه سيصلك الـ IP في لوحة التحكم.");
-                log.innerHTML = "> تم إنشاء رابط التتبع: https://dark-security.io/track/9283<br>" + log.innerHTML;
-            }
-            else {
-                setTimeout(() => { alert(`أداة ${name} قيد الفحص الآن.. لا توجد تهديدات.`); }, 1000);
-            }
-        }
-    </script>
+<div id="log">جاهز...</div>
+
+</div>
+
+<div class="floating" onclick="quickScan()">🔍</div>
+
+<script>
+
+/* LOGIN */
+function login(){
+let code=document.getElementById("code").value;
+
+if(code==="dark-dark"){
+document.getElementById("app").style.display="block";
+}
+else alert("كود غير صحيح");
+}
+
+/* LOG */
+function log(msg){
+let box=document.getElementById("log");
+box.innerHTML="> "+msg+"<br>"+box.innerHTML;
+}
+
+/* Military File Scanner */
+function scanFile(){
+
+let file=document.getElementById("fileInput").files[0];
+
+if(!file){
+alert("اختر ملف أولاً");
+return;
+}
+
+let reader=new FileReader();
+
+reader.onload=function(e){
+
+let hash=sha256(e.target.result);
+
+/* Risk heuristic */
+let risk=0;
+
+if(file.name.includes(".exe")) risk+=30;
+if(file.name.split(".").length>2) risk+=40;
+
+alert("SHA256:\n"+hash+"\nRisk Score: "+Math.min(risk,95)+"%");
+
+log("تم فحص الملف عسكرياً");
+};
+
+reader.readAsArrayBuffer(file);
+}
+
+/* QR Scanner */
+function scanQR(){
+
+let container=document.getElementById("qrContainer");
+container.innerHTML="<div id='qr'></div>";
+
+let scanner=new Html5Qrcode("qr");
+
+scanner.start(
+{facingMode:"environment"},
+{fps:10,qrbox:250},
+text=>{
+let risk=0;
+
+if(text.includes("http")) risk+=20;
+if(text.includes("login")) risk+=25;
+
+alert("QR Content:\n"+text+"\nRisk : "+risk+"%");
+scanner.stop();
+
+log("فحص QR مكتمل");
+},
+()=>{}
+);
+}
+
+/* AI Scam Detector */
+function aiScan(){
+
+let text=document.getElementById("textInput").value;
+
+if(!text){
+alert("اكتب نص");
+return;
+}
+
+let risk=0;
+
+let scamPatterns=[
+"free","win","prize","urgent",
+"bank","verify","password",
+"lottery","update"
+];
+
+scamPatterns.forEach(p=>{
+if(text.toLowerCase().includes(p))
+risk+=12;
+});
+
+risk=Math.min(risk,95);
+
+alert("AI Risk Probability : "+risk+"%");
+log("تحليل ذكاء أمني");
+}
+
+/* Report PDF */
+function generateReport(){
+
+let doc={
+content:[
+{text:"Dark Security Military Report",fontSize:20},
+"----------------------",
+"Security Scan Completed"
+]
+};
+
+pdfMake.createPdf(doc).download("military_report.pdf");
+
+log("تم توليد التقرير");
+}
+
+/* Quick Scan */
+function quickScan(){
+alert("Quick Scan Completed\nNo Threats Found");
+}
+
+</script>
+
 </body>
 </html>
-

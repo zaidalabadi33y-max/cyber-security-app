@@ -3,174 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SentryGuard Ultra | Final Edition v15.0</title>
+    <title>Dark Security System</title>
     <style>
-        :root {
-            --bg-black: #050505; --card-dark: #0d0d0d;
-            --neon-green: #00ff88; --admin-red: #ff3333;
-            --gold: #ffcc00; --blue: #00ccff; --text-gray: #a0a0a0;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-black); color: white; margin: 0; overflow-x: hidden; }
-        .container { padding: 15px; max-width: 800px; margin: auto; }
-
-        /* شاشة القفل */
-        #overlay { position: fixed; inset: 0; background: var(--bg-black); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; }
-        .lock-box { background: var(--card-dark); padding: 30px; border-radius: 25px; border: 1px solid #1a1a1a; text-align: center; width: 85%; max-width: 420px; box-shadow: 0 0 30px rgba(0,0,0,1); }
+        :root { --main-color: #00ff41; --bg-color: #0a0a0a; --card-bg: #1a1a1a; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: white; margin: 0; }
+        .login-screen, .admin-panel, .main-app { display: none; padding: 20px; text-align: center; }
+        .active { display: block; }
         
-        .colored-name { color: var(--neon-green); font-weight: bold; }
-        .price-label { color: var(--gold); }
-        .price-value { color: var(--blue); }
-
-        input { background: #000; border: 1px solid #333; color: var(--neon-green); padding: 15px; border-radius: 12px; width: 90%; text-align: center; margin-bottom: 15px; font-size: 1.1rem; }
+        input, button { padding: 12px; margin: 10px; border-radius: 5px; border: 1px solid var(--main-color); background: transparent; color: white; width: 80%; max-width: 300px; }
+        button { background: var(--main-color); color: black; font-weight: bold; cursor: pointer; }
         
-        button { cursor: pointer; border-radius: 12px; font-weight: bold; transition: 0.2s; padding: 12px; border: none; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-main { background: #1a1a1a; color: var(--neon-green); border: 1px solid #333; }
-        .btn-tele { background: #0088cc; color: white; text-decoration: none; font-size: 0.9rem; }
-
-        /* لوحة العمليات */
-        .dashboard-card { background: var(--card-dark); border: 1px solid #222; padding: 20px; border-radius: 20px; text-align: center; margin-top: 10px; }
-        .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .tool-item { background: #111; border: 1px solid #222; padding: 15px; border-radius: 15px; font-size: 0.85rem; transition: 0.3s; cursor: pointer; }
-        .tool-item:hover { border-color: var(--neon-green); background: #001a0d; }
-
-        /* نافذة فحص الروابط (جديد) */
-        #scannerModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; align-items: center; justify-content: center; }
-        .scanner-box { background: var(--card-dark); padding: 25px; border-radius: 20px; border: 1px solid var(--neon-green); width: 90%; max-width: 400px; text-align: center; }
-
-        #adminPanel { background: #080808; border: 1px solid var(--admin-red); padding: 20px; border-radius: 20px; margin-top: 25px; display: none; }
-        .key-item { background: #000; border: 1px solid #222; padding: 15px; border-radius: 15px; margin-bottom: 10px; }
-        .copy-btn { background: #222; color: var(--gold); font-size: 0.7rem; padding: 5px; width: auto; display: inline-flex; margin-right: 10px; }
-
-        button:active { transform: scale(0.98); }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .card { background: var(--card-bg); padding: 15px; border-radius: 10px; border-bottom: 3px solid var(--main-color); transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        
+        .status-bar { display: flex; justify-content: space-around; background: #222; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-size: 0.9em; }
+        .danger { color: #ff4b2b; }
+        .safe { color: var(--main-color); }
     </style>
 </head>
 <body>
 
-    <div id="scannerModal">
-        <div class="scanner-box">
-            <h3 style="color: var(--neon-green);">محلل الروابط الذكي</h3>
-            <input type="text" id="urlInput" placeholder="ضع الرابط هنا (https://...)" style="font-size: 0.9rem;">
-            <button class="btn-main" onclick="scanURL()">بدء الفحص 🔍</button>
-            <div id="scanResult" style="margin-top:15px; font-size:0.9rem;"></div>
-            <button onclick="closeScanner()" style="background:transparent; color:gray; font-size:0.8rem; border:none; margin-top:10px;">إغلاق</button>
-        </div>
+    <div id="loginPage" class="login-screen active">
+        <h2>🔒 نظام الحماية المدفوع</h2>
+        <p>أدخل كود التفعيل للاستمرار</p>
+        <input type="text" id="activationCode" placeholder="أدخل الكود هنا...">
+        <button onclick="checkAccess()">دخول</button>
     </div>
 
-    <div id="overlay">
-        <div class="lock-box">
-            <h1 style="margin:0; letter-spacing: 2px;">SENTRY<span style="color:var(--neon-green)">GUARD</span></h1>
-            <p style="color:var(--text-gray); font-size: 0.8rem; margin-bottom: 20px;">نظام الحماية المطور - نسخة <span class="colored-name">عباس ماجد</span></p>
-            
-            <input type="text" id="activationKey" placeholder="أدخل الكود هنا">
-            <button class="btn-main" onclick="vibrateDevice(); checkKey();">تفعيل الآن 🔓</button>
-
-            <div style="background: #000; border-radius: 15px; padding: 15px; margin: 15px 0; border: 1px solid #222; text-align: right;">
-                <div style="text-align:center; color: var(--text-gray); font-size: 0.8rem; margin-bottom: 10px;">💳 خطط الاشتراك</div>
-                <div style="display:flex; justify-content:space-between; font-size: 0.85rem; margin-bottom: 5px;">
-                    <span class="price-label">إسبوعي</span> <span class="price-value">5$</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size: 0.85rem; margin-bottom: 5px;">
-                    <span class="price-label">شهري</span> <span class="price-value">15$</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size: 0.85rem;">
-                    <span class="price-label">سنوي</span> <span class="price-value">70$</span>
-                </div>
-            </div>
-            <a href="https://t.me/D_8_5" class="btn-tele" onclick="vibrateDevice();" target="_blank">✈️ تواصل مع المطور</a>
-        </div>
+    <div id="adminPage" class="admin-panel">
+        <h2>⚙️ لوحة تحكم المدير</h2>
+        <input type="text" id="newCode" placeholder="الكود الجديد">
+        <select id="duration">
+            <option value="يوم">يوم</option>
+            <option value="أسبوع">أسبوع</option>
+            <option value="شهر">شهر</option>
+            <option value="سنة">سنة</option>
+        </select>
+        <input type="number" id="devices" placeholder="عدد الأجهزة">
+        <button onclick="generateKey()">صنع كود</button>
+        <div id="generatedCodesList"></div>
+        <button onclick="logout()" style="background: red;">خروج</button>
     </div>
 
-    <div id="mainApp" class="container" style="display:none;">
-        <div style="background: var(--card-dark); border: 1px solid #222; padding: 15px; border-radius: 15px; text-align:center; margin-bottom: 15px;">
-             🛡️ <span class="colored-name">SENTRYGUARD ULTRA</span> | الحالة: <span id="daysLeft" style="color:var(--blue)">--</span>
+    <div id="mainApp" class="main-app">
+        <div class="status-bar">
+            <div>درجة الأمان: <br><b class="safe">95/100</b></div>
+            <div>تطبيقات خطرة: <br><b class="danger">0</b></div>
+            <div>الشبكة: <br><b class="safe">متصلة</b></div>
         </div>
 
-        <div class="dashboard-card">
-            <div class="tool-grid">
-                <div class="tool-item" onclick="vibrateDevice(); alert('جاري فحص النظام...')"><span>🔍</span><br>فحص شامل</div>
-                <div class="tool-item" onclick="vibrateDevice(); alert('جاري التشفير...')"><span>🔐</span><br>تشفير IP</div>
-                <div class="tool-item" onclick="vibrateDevice(); alert('تم تنظيف الملفات')"><span>🧹</span><br>تنظيف الأثر</div>
-                <div class="tool-item" onclick="openScanner()"><span>🌐</span><br>أمن الويب</div>
-            </div>
-            <div style="margin-top:20px; font-size:0.7rem; color:var(--text-gray);">الوقت: <span id="liveClock"></span></div>
+        <div class="dashboard-grid">
+            <div class="card" onclick="tool('فحص الروابط')">🔗 فحص الروابط</div>
+            <div class="card" onclick="tool('تنظيف الجهاز')">🧹 حذف التالف (3 أشهر)</div>
+            <div class="card" onclick="tool('موقع IP')">📍 تحديد موقع IP</div>
+            <div class="card" onclick="tool('صنع رابط IP')">🔗 صانع رابط IP</div>
+            <div class="card" onclick="tool('استهلاك البطارية')">🔋 فحص البطارية</div>
+            <div class="card" onclick="tool('توليد باسورات')">🔑 توليد باسورات</div>
+            <div class="card" onclick="tool('اختبار أمني')">📝 اختبار معلومات</div>
+            <div class="card" onclick="tool('قوة الباسورد')">💪 قوة الكلمة</div>
+            <div class="card" onclick="tool('تحليل انستا')">📸 فحص انستغرام</div>
+            <div class="card" onclick="tool('تحليل فيسبوك')">🔵 فحص فيسبوك</div>
+            <div class="card" onclick="tool('فحص APK')">📦 فحص APK</div>
+            <div class="card" onclick="tool('تنبيه المصادر')">⚠️ تنبيه Play Store</div>
+            <div class="card" onclick="tool('كشف التجسس')">🕵️ كشف التجسس</div>
+            <div class="card" onclick="tool('فحص Root')">🛡️ فحص الروت</div>
         </div>
-
-        <div id="adminPanel">
-            <h3 style="color: var(--admin-red);">لوحة التحكم</h3>
-            <div style="display:flex; gap:10px;">
-                <input type="number" id="daysInput" placeholder="أيام" style="width: 30%;">
-                <button class="btn-main" onclick="generateKey()" style="background:var(--admin-red); color:white;">صنع كود</button>
-            </div>
-            <div id="keyList"></div>
-        </div>
+        
+        <div style="margin-top: 20px; font-size: 0.7em; color: gray;">آخر فحص: <span id="lastScan">الآن</span></div>
     </div>
 
     <script>
-        const TELE_TOKEN = "8394196695:AAGcQy1Pyy5A7VqBxrL4fBm-w9eyTTXUQ6M";
-        const TELE_ID = "1487040062";
-        const MASTER_ADMIN = "abbas-majed-ganem-hadi";
-        const PUBLIC_CODE = "2007125197450";
+        const ADMIN_KEY = "dark-dark-dark";
+        let validCodes = JSON.parse(localStorage.getItem('validCodes')) || {};
 
-        let subData = JSON.parse(localStorage.getItem('subData')) || [];
-        const deviceID = btoa(navigator.userAgent).substring(15, 25);
-
-        function vibrateDevice() { if (navigator.vibrate) navigator.vibrate(50); }
-
-        function openScanner() { vibrateDevice(); document.getElementById('scannerModal').style.display = 'flex'; }
-        function closeScanner() { document.getElementById('scannerModal').style.display = 'none'; }
-
-        function scanURL() {
-            const url = document.getElementById('urlInput').value;
-            const res = document.getElementById('scanResult');
-            if(!url) return alert("أدخل رابطاً أولاً!");
-            
-            res.innerHTML = "جاري تحليل الرابط... ⏳";
-            setTimeout(() => {
-                if(url.includes("bit.ly") || url.includes("hack")) {
-                    res.innerHTML = "<span style='color:red;'>⚠️ تنبيه: الرابط مشبوه أو يحتوي على برمجيات خبيثة!</span>";
-                } else {
-                    res.innerHTML = "<span style='color:var(--neon-green);'>✅ الرابط آمن: لم يتم العثور على تهديدات.</span>";
-                }
-            }, 2000);
-        }
-
-        async function sendTeleMsg(msg) {
-            const url = `https://api.telegram.org/bot${TELE_TOKEN}/sendMessage?chat_id=${TELE_ID}&text=${encodeURIComponent(msg)}`;
-            try { await fetch(url); } catch(e) {}
-        }
-
-        function checkKey() {
-            const input = document.getElementById('activationKey').value;
-            if (input === MASTER_ADMIN) { launch(true, "صلاحيات كاملة"); return; }
-            if (input === PUBLIC_CODE) { launch(false, "مدى الحياة"); return; }
-            
-            let user = subData.find(i => i.key === input);
-            if (user && Date.now() <= user.expiry) { launch(false, "نشط"); } 
-            else { alert("الكود خطأ!"); }
-        }
-
-        function launch(isAdmin, time) {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-            if(isAdmin) document.getElementById('adminPanel').style.display = 'block';
-            document.getElementById('daysLeft').innerText = time;
-            setInterval(() => { document.getElementById('liveClock').innerText = new Date().toLocaleTimeString('ar-EG'); }, 1000);
+        function checkAccess() {
+            const input = document.getElementById('activationCode').value;
+            if (input === ADMIN_KEY) {
+                showPage('adminPage');
+            } else if (validCodes[input]) {
+                showPage('mainApp');
+            } else {
+                alert("الكود غير صحيح أو منتهي الصلاحية!");
+            }
         }
 
         function generateKey() {
-            const d = document.getElementById('daysInput').value || 30;
-            const k = "SG-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-            subData.push({ key: k, expiry: Date.now() + (d * 86400000) });
-            localStorage.setItem('subData', JSON.stringify(subData));
-            updateList();
+            const code = document.getElementById('newCode').value;
+            const dur = document.getElementById('duration').value;
+            const dev = document.getElementById('devices').value;
+            if(code) {
+                validCodes[code] = { duration: dur, devices: dev };
+                localStorage.setItem('validCodes', JSON.stringify(validCodes));
+                alert("تم إنشاء الكود بنجاح!");
+                updateAdminList();
+            }
         }
 
-        function updateList() {
-            const list = document.getElementById('keyList');
-            list.innerHTML = "";
-            subData.forEach(u => {
-                list.innerHTML += `<div class="key-item">${u.key} <button class="copy-btn" onclick="navigator.clipboard.writeText('${u.key}'); alert('تم النسخ')">نسخ</button></div>`;
-            });
+        function updateAdminList() {
+            const list = document.getElementById('generatedCodesList');
+            list.innerHTML = "<h3>الأكواد النشطة:</h3>";
+            for (let c in validCodes) {
+                list.innerHTML += `<p>${c} - (${validCodes[c].duration}) - أجهزة: ${validCodes[c].devices}</p>`;
+            }
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('div').forEach(d => d.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(id === 'adminPage') updateAdminList();
+        }
+
+        function logout() { location.reload(); }
+
+        // وظائف الأزرار
+        function tool(name) {
+            alert("بدء تشغيل أداة: " + name + "\n(هذه الميزة تعمل حالياً كمحاكاة للواجهة)");
+            // هنا يتم إضافة الأكواد البرمجية الخاصة بكل وظيفة
         }
     </script>
 </body>

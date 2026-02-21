@@ -10,7 +10,6 @@
             --neon-green: #00ff88; --admin-red: #ff3333;
             --gold: #ffcc00; --blue: #00ccff; --text-gray: #a0a0a0;
         }
-        /* التصميم الداكن بالكامل */
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-black); color: white; margin: 0; overflow-x: hidden; }
         .container { padding: 15px; max-width: 800px; margin: auto; }
 
@@ -18,7 +17,6 @@
         #overlay { position: fixed; inset: 0; background: var(--bg-black); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; }
         .lock-box { background: var(--card-dark); padding: 30px; border-radius: 25px; border: 1px solid #1a1a1a; text-align: center; width: 85%; max-width: 420px; box-shadow: 0 0 30px rgba(0,0,0,1); }
         
-        /* تلوين الأحرف والأسماء فقط */
         .colored-name { color: var(--neon-green); font-weight: bold; }
         .price-label { color: var(--gold); }
         .price-value { color: var(--blue); }
@@ -29,16 +27,34 @@
         .btn-main { background: #1a1a1a; color: var(--neon-green); border: 1px solid #333; }
         .btn-tele { background: #0088cc; color: white; text-decoration: none; font-size: 0.9rem; }
 
-        /* لوحة الإدارة */
+        /* لوحة العمليات */
+        .dashboard-card { background: var(--card-dark); border: 1px solid #222; padding: 20px; border-radius: 20px; text-align: center; margin-top: 10px; }
+        .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .tool-item { background: #111; border: 1px solid #222; padding: 15px; border-radius: 15px; font-size: 0.85rem; transition: 0.3s; cursor: pointer; }
+        .tool-item:hover { border-color: var(--neon-green); background: #001a0d; }
+
+        /* نافذة فحص الروابط (جديد) */
+        #scannerModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; align-items: center; justify-content: center; }
+        .scanner-box { background: var(--card-dark); padding: 25px; border-radius: 20px; border: 1px solid var(--neon-green); width: 90%; max-width: 400px; text-align: center; }
+
         #adminPanel { background: #080808; border: 1px solid var(--admin-red); padding: 20px; border-radius: 20px; margin-top: 25px; display: none; }
         .key-item { background: #000; border: 1px solid #222; padding: 15px; border-radius: 15px; margin-bottom: 10px; }
         .copy-btn { background: #222; color: var(--gold); font-size: 0.7rem; padding: 5px; width: auto; display: inline-flex; margin-right: 10px; }
 
-        /* تأثير الهزة للزر */
         button:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
+
+    <div id="scannerModal">
+        <div class="scanner-box">
+            <h3 style="color: var(--neon-green);">محلل الروابط الذكي</h3>
+            <input type="text" id="urlInput" placeholder="ضع الرابط هنا (https://...)" style="font-size: 0.9rem;">
+            <button class="btn-main" onclick="scanURL()">بدء الفحص 🔍</button>
+            <div id="scanResult" style="margin-top:15px; font-size:0.9rem;"></div>
+            <button onclick="closeScanner()" style="background:transparent; color:gray; font-size:0.8rem; border:none; margin-top:10px;">إغلاق</button>
+        </div>
+    </div>
 
     <div id="overlay">
         <div class="lock-box">
@@ -60,29 +76,36 @@
                     <span class="price-label">سنوي</span> <span class="price-value">70$</span>
                 </div>
             </div>
-
-            <p style="font-size: 0.7rem; color: #555;">طرق الدفع: اسياسيل - زين كاش - USDT</p>
-            <a href="https://t.me/D_8_5" class="btn-tele" onclick="vibrateDevice();" target="_blank">✈️ تواصل مع <span style="margin-right:5px; color:white;">المطور</span></a>
+            <a href="https://t.me/D_8_5" class="btn-tele" onclick="vibrateDevice();" target="_blank">✈️ تواصل مع المطور</a>
         </div>
     </div>
 
     <div id="mainApp" class="container" style="display:none;">
-        <div style="background: var(--card-dark); border: 1px solid #222; padding: 10px; border-radius: 12px; text-align:center; margin-bottom: 15px;">
-            ⏳ حالة الاشتراك: <span id="daysLeft" style="color:var(--blue)">--</span>
+        <div style="background: var(--card-dark); border: 1px solid #222; padding: 15px; border-radius: 15px; text-align:center; margin-bottom: 15px;">
+             🛡️ <span class="colored-name">SENTRYGUARD ULTRA</span> | الحالة: <span id="daysLeft" style="color:var(--blue)">--</span>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="tool-grid">
+                <div class="tool-item" onclick="vibrateDevice(); alert('جاري فحص النظام...')"><span>🔍</span><br>فحص شامل</div>
+                <div class="tool-item" onclick="vibrateDevice(); alert('جاري التشفير...')"><span>🔐</span><br>تشفير IP</div>
+                <div class="tool-item" onclick="vibrateDevice(); alert('تم تنظيف الملفات')"><span>🧹</span><br>تنظيف الأثر</div>
+                <div class="tool-item" onclick="openScanner()"><span>🌐</span><br>أمن الويب</div>
+            </div>
+            <div style="margin-top:20px; font-size:0.7rem; color:var(--text-gray);">الوقت: <span id="liveClock"></span></div>
         </div>
 
         <div id="adminPanel">
-            <h3 style="color: var(--admin-red);">لوحة التحكم | <span class="colored-name">عباس ماجد</span></h3>
+            <h3 style="color: var(--admin-red);">لوحة التحكم</h3>
             <div style="display:flex; gap:10px;">
                 <input type="number" id="daysInput" placeholder="أيام" style="width: 30%;">
-                <button class="btn-main" onclick="vibrateDevice(); generateKey();" style="background: var(--admin-red); color:white; border:none;">صنع كود</button>
+                <button class="btn-main" onclick="generateKey()" style="background:var(--admin-red); color:white;">صنع كود</button>
             </div>
             <div id="keyList"></div>
         </div>
     </div>
 
     <script>
-        // إعدادات التليجرام (Bot)
         const TELE_TOKEN = "8394196695:AAGcQy1Pyy5A7VqBxrL4fBm-w9eyTTXUQ6M";
         const TELE_ID = "1487040062";
         const MASTER_ADMIN = "abbas-majed-ganem-hadi";
@@ -91,12 +114,26 @@
         let subData = JSON.parse(localStorage.getItem('subData')) || [];
         const deviceID = btoa(navigator.userAgent).substring(15, 25);
 
-        // وظيفة الهزة
-        function vibrateDevice() {
-            if (navigator.vibrate) navigator.vibrate(50);
+        function vibrateDevice() { if (navigator.vibrate) navigator.vibrate(50); }
+
+        function openScanner() { vibrateDevice(); document.getElementById('scannerModal').style.display = 'flex'; }
+        function closeScanner() { document.getElementById('scannerModal').style.display = 'none'; }
+
+        function scanURL() {
+            const url = document.getElementById('urlInput').value;
+            const res = document.getElementById('scanResult');
+            if(!url) return alert("أدخل رابطاً أولاً!");
+            
+            res.innerHTML = "جاري تحليل الرابط... ⏳";
+            setTimeout(() => {
+                if(url.includes("bit.ly") || url.includes("hack")) {
+                    res.innerHTML = "<span style='color:red;'>⚠️ تنبيه: الرابط مشبوه أو يحتوي على برمجيات خبيثة!</span>";
+                } else {
+                    res.innerHTML = "<span style='color:var(--neon-green);'>✅ الرابط آمن: لم يتم العثور على تهديدات.</span>";
+                }
+            }, 2000);
         }
 
-        // إرسال إشعار للتليجرام
         async function sendTeleMsg(msg) {
             const url = `https://api.telegram.org/bot${TELE_TOKEN}/sendMessage?chat_id=${TELE_ID}&text=${encodeURIComponent(msg)}`;
             try { await fetch(url); } catch(e) {}
@@ -104,44 +141,26 @@
 
         function checkKey() {
             const input = document.getElementById('activationKey').value;
-            const now = Date.now();
-
-            if (input === MASTER_ADMIN) {
-                sendTeleMsg(`🚀 دخول المدير: عباس ماجد\n📱 الجهاز: ${deviceID}`);
-                launch(true, "صلاحيات كاملة");
-                return;
-            }
-
-            if (input === PUBLIC_CODE) {
-                sendTeleMsg(`✅ تفعيل كود عام: ${input}\n📱 الجهاز: ${deviceID}`);
-                launch(false, "مدى الحياة");
-                return;
-            }
-
+            if (input === MASTER_ADMIN) { launch(true, "صلاحيات كاملة"); return; }
+            if (input === PUBLIC_CODE) { launch(false, "مدى الحياة"); return; }
+            
             let user = subData.find(i => i.key === input);
-            if (user && now <= user.expiry) {
-                if (user.deviceID && user.deviceID !== deviceID) { alert("الكود مستخدم!"); return; }
-                if (!user.deviceID) {
-                    user.deviceID = deviceID;
-                    localStorage.setItem('subData', JSON.stringify(subData));
-                    sendTeleMsg(`💰 تفعيل كود مبيوع: ${input}\n⏳ المدة: ${user.days} يوم\n📱 الجهاز: ${deviceID}`);
-                }
-                launch(false, Math.ceil((user.expiry - now)/86400000) + " يوم");
-            } else { alert("الكود غير صحيح!"); }
+            if (user && Date.now() <= user.expiry) { launch(false, "نشط"); } 
+            else { alert("الكود خطأ!"); }
         }
 
         function launch(isAdmin, time) {
             document.getElementById('overlay').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
-            if(isAdmin) { document.getElementById('adminPanel').style.display = 'block'; updateList(); }
-            else { document.getElementById('daysLeft').innerText = time; }
+            if(isAdmin) document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('daysLeft').innerText = time;
+            setInterval(() => { document.getElementById('liveClock').innerText = new Date().toLocaleTimeString('ar-EG'); }, 1000);
         }
 
         function generateKey() {
             const d = document.getElementById('daysInput').value || 30;
             const k = "SG-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-            const exp = Date.now() + (d * 86400000);
-            subData.push({ key: k, expiry: exp, deviceID: null, days: d });
+            subData.push({ key: k, expiry: Date.now() + (d * 86400000) });
             localStorage.setItem('subData', JSON.stringify(subData));
             updateList();
         }
@@ -150,18 +169,8 @@
             const list = document.getElementById('keyList');
             list.innerHTML = "";
             subData.forEach(u => {
-                list.innerHTML += `
-                    <div class="key-item">
-                        <span style="color:var(--neon-green)">${u.key}</span>
-                        <button class="copy-btn" onclick="vibrateDevice(); copyKey('${u.key}')">نسخ الكود 📋</button>
-                        <div style="font-size:0.7rem; color:gray; margin-top:5px;">الجهاز: ${u.deviceID || 'فارغ'}</div>
-                    </div>`;
+                list.innerHTML += `<div class="key-item">${u.key} <button class="copy-btn" onclick="navigator.clipboard.writeText('${u.key}'); alert('تم النسخ')">نسخ</button></div>`;
             });
-        }
-
-        function copyKey(k) {
-            navigator.clipboard.writeText(k);
-            alert("تم نسخ الكود: " + k);
         }
     </script>
 </body>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentryGuard Ultra | Final Edition v15.0</title>
+    <style>
+        :root {
+            --bg-black: #050505; --card-dark: #0d0d0d;
+            --neon-green: #00ff88; --admin-red: #ff3333;
+            --gold: #ffcc00; --blue: #00ccff; --text-gray: #a0a0a0;
+        }
+        /* التصميم الداكن بالكامل */
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-black); color: white; margin: 0; overflow-x: hidden; }
+        .container { padding: 15px; max-width: 800px; margin: auto; }
+
+        /* شاشة القفل */
+        #overlay { position: fixed; inset: 0; background: var(--bg-black); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; }
+        .lock-box { background: var(--card-dark); padding: 30px; border-radius: 25px; border: 1px solid #1a1a1a; text-align: center; width: 85%; max-width: 420px; box-shadow: 0 0 30px rgba(0,0,0,1); }
+        
+        /* تلوين الأحرف والأسماء فقط */
+        .colored-name { color: var(--neon-green); font-weight: bold; }
+        .price-label { color: var(--gold); }
+        .price-value { color: var(--blue); }
+
+        input { background: #000; border: 1px solid #333; color: var(--neon-green); padding: 15px; border-radius: 12px; width: 90%; text-align: center; margin-bottom: 15px; font-size: 1.1rem; }
+        
+        button { cursor: pointer; border-radius: 12px; font-weight: bold; transition: 0.2s; padding: 12px; border: none; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-main { background: #1a1a1a; color: var(--neon-green); border: 1px solid #333; }
+        .btn-tele { background: #0088cc; color: white; text-decoration: none; font-size: 0.9rem; }
+
+        /* لوحة الإدارة */
+        #adminPanel { background: #080808; border: 1px solid var(--admin-red); padding: 20px; border-radius: 20px; margin-top: 25px; display: none; }
+        .key-item { background: #000; border: 1px solid #222; padding: 15px; border-radius: 15px; margin-bottom: 10px; }
+        .copy-btn { background: #222; color: var(--gold); font-size: 0.7rem; padding: 5px; width: auto; display: inline-flex; margin-right: 10px; }
+
+        /* تأثير الهزة للزر */
+        button:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+    <div id="overlay">
+        <div class="lock-box">
+            <h1 style="margin:0; letter-spacing: 2px;">SENTRY<span style="color:var(--neon-green)">GUARD</span></h1>
+            <p style="color:var(--text-gray); font-size: 0.8rem; margin-bottom: 20px;">نظام الحماية المطور - نسخة <span class="colored-name">عباس ماجد</span></p>
+            
+            <input type="text" id="activationKey" placeholder="أدخل الكود هنا">
+            <button class="btn-main" onclick="vibrateDevice(); checkKey();">تفعيل الآن 🔓</button>
+
+            <div style="background: #000; border-radius: 15px; padding: 15px; margin: 15px 0; border: 1px solid #222; text-align: right;">
+                <div style="text-align:center; color: var(--text-gray); font-size: 0.8rem; margin-bottom: 10px;">💳 خطط الاشتراك</div>
+                <div style="display:flex; justify-content:space-between; font-size: 0.85rem; margin-bottom: 5px;">
+                    <span class="price-label">إسبوعي</span> <span class="price-value">5$</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size: 0.85rem; margin-bottom: 5px;">
+                    <span class="price-label">شهري</span> <span class="price-value">15$</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size: 0.85rem;">
+                    <span class="price-label">سنوي</span> <span class="price-value">70$</span>
+                </div>
+            </div>
+
+            <p style="font-size: 0.7rem; color: #555;">طرق الدفع: اسياسيل - زين كاش - USDT</p>
+            <a href="https://t.me/D_8_5" class="btn-tele" onclick="vibrateDevice();" target="_blank">✈️ تواصل مع <span style="margin-right:5px; color:white;">المطور</span></a>
+        </div>
+    </div>
+
+    <div id="mainApp" class="container" style="display:none;">
+        <div style="background: var(--card-dark); border: 1px solid #222; padding: 10px; border-radius: 12px; text-align:center; margin-bottom: 15px;">
+            ⏳ حالة الاشتراك: <span id="daysLeft" style="color:var(--blue)">--</span>
+        </div>
+
+        <div id="adminPanel">
+            <h3 style="color: var(--admin-red);">لوحة التحكم | <span class="colored-name">عباس ماجد</span></h3>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="daysInput" placeholder="أيام" style="width: 30%;">
+                <button class="btn-main" onclick="vibrateDevice(); generateKey();" style="background: var(--admin-red); color:white; border:none;">صنع كود</button>
+            </div>
+            <div id="keyList"></div>
+        </div>
+    </div>
+
+    <script>
+        // إعدادات التليجرام (Bot)
+        const TELE_TOKEN = "8394196695:AAGcQy1Pyy5A7VqBxrL4fBm-w9eyTTXUQ6M";
+        const TELE_ID = "1487040062";
+        const MASTER_ADMIN = "abbas-majed-ganem-hadi";
+        const PUBLIC_CODE = "2007125197450";
+
+        let subData = JSON.parse(localStorage.getItem('subData')) || [];
+        const deviceID = btoa(navigator.userAgent).substring(15, 25);
+
+        // وظيفة الهزة
+        function vibrateDevice() {
+            if (navigator.vibrate) navigator.vibrate(50);
+        }
+
+        // إرسال إشعار للتليجرام
+        async function sendTeleMsg(msg) {
+            const url = `https://api.telegram.org/bot${TELE_TOKEN}/sendMessage?chat_id=${TELE_ID}&text=${encodeURIComponent(msg)}`;
+            try { await fetch(url); } catch(e) {}
+        }
+
+        function checkKey() {
+            const input = document.getElementById('activationKey').value;
+            const now = Date.now();
+
+            if (input === MASTER_ADMIN) {
+                sendTeleMsg(`🚀 دخول المدير: عباس ماجد\n📱 الجهاز: ${deviceID}`);
+                launch(true, "صلاحيات كاملة");
+                return;
+            }
+
+            if (input === PUBLIC_CODE) {
+                sendTeleMsg(`✅ تفعيل كود عام: ${input}\n📱 الجهاز: ${deviceID}`);
+                launch(false, "مدى الحياة");
+                return;
+            }
+
+            let user = subData.find(i => i.key === input);
+            if (user && now <= user.expiry) {
+                if (user.deviceID && user.deviceID !== deviceID) { alert("الكود مستخدم!"); return; }
+                if (!user.deviceID) {
+                    user.deviceID = deviceID;
+                    localStorage.setItem('subData', JSON.stringify(subData));
+                    sendTeleMsg(`💰 تفعيل كود مبيوع: ${input}\n⏳ المدة: ${user.days} يوم\n📱 الجهاز: ${deviceID}`);
+                }
+                launch(false, Math.ceil((user.expiry - now)/86400000) + " يوم");
+            } else { alert("الكود غير صحيح!"); }
+        }
+
+        function launch(isAdmin, time) {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            if(isAdmin) { document.getElementById('adminPanel').style.display = 'block'; updateList(); }
+            else { document.getElementById('daysLeft').innerText = time; }
+        }
+
+        function generateKey() {
+            const d = document.getElementById('daysInput').value || 30;
+            const k = "SG-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+            const exp = Date.now() + (d * 86400000);
+            subData.push({ key: k, expiry: exp, deviceID: null, days: d });
+            localStorage.setItem('subData', JSON.stringify(subData));
+            updateList();
+        }
+
+        function updateList() {
+            const list = document.getElementById('keyList');
+            list.innerHTML = "";
+            subData.forEach(u => {
+                list.innerHTML += `
+                    <div class="key-item">
+                        <span style="color:var(--neon-green)">${u.key}</span>
+                        <button class="copy-btn" onclick="vibrateDevice(); copyKey('${u.key}')">نسخ الكود 📋</button>
+                        <div style="font-size:0.7rem; color:gray; margin-top:5px;">الجهاز: ${u.deviceID || 'فارغ'}</div>
+                    </div>`;
+            });
+        }
+
+        function copyKey(k) {
+            navigator.clipboard.writeText(k);
+            alert("تم نسخ الكود: " + k);
+        }
+    </script>
+</body>
+</html>

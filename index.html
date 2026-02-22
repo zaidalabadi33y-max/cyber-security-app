@@ -3,125 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر الكوزمتك</title>
+    <title>مطعم الضلع - لوحة التحكم</title>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #fdf2f8; 
-            padding: 20px; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-        }
-        h1 { color: #d81b60; margin-top: 20px; }
-        #searchBar {
-            width: 90%;
-            max-width: 500px;
-            padding: 15px 25px;
-            margin: 20px 0;
-            border: 2px solid #fce4ec;
-            border-radius: 30px;
-            font-size: 16px;
-            outline: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        .products-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            justify-content: center;
-            width: 100%;
-            max-width: 1200px;
-        }
-        .product-card { 
-            background: white; 
-            border-radius: 20px; 
-            padding: 15px; 
-            width: 280px; 
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            border: 1px solid #fce4ec;
-        }
-        .product-card img { 
-            width: 100%; 
-            height: 250px;
-            object-fit: cover;
-            border-radius: 15px; 
-        }
-        .product-name { color: #333; margin: 15px 0 5px 0; font-size: 1.2em; }
-        .description { color: #777; font-size: 0.9em; height: 40px; margin-bottom: 10px; }
-        .price { color: #d81b60; font-weight: bold; font-size: 1.4em; margin: 10px 0; }
-        .whatsapp-btn {
-            background-color: #25D366; 
-            color: white;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 10px;
-            display: block;
-            font-weight: bold;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        header { background: #ff9800; color: white; padding: 15 shadow; text-align: center; border-radius: 10px; }
+        .container { max-width: 800px; margin: auto; }
+        .card { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; }
+        .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-add { background: #4CAF50; color: white; width: 100%; margin-bottom: 20px; font-size: 18px; }
+        .btn-edit { background: #2196F3; color: white; margin-left: 5px; }
+        .btn-delete { background: #f44336; color: white; }
+        .btn-order { background: #ff9800; color: white; }
+        .modal { background: white; padding: 20px; border-radius: 10px; border: 1px solid #ccc; margin-top: 20px; }
+        input { width: 95%; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
-    <h1>✨ متجري للجمال ✨</h1>
+<div class="container">
+    <header>
+        <h1>🍕 مطعم الضلع 🍔</h1>
+        <p>لوحة التحكم والمنيو</p>
+    </header>
 
-    <input type="text" id="searchBar" onkeyup="searchProducts()" placeholder="ابحث عن اسم المنتج...">
-
-    <div class="products-container" id="productList">
-
-        <div class="product-card">
-            <img src="https://i.ibb.co/Xf8mX0Y/Pz3qfjs3.jpg" alt="سيروم">
-            <h3 class="product-name">عطر</h3>
-            <p class="description">
-
-💖 ثباتية قوية تدوم لـ 24 ساعة
-💖 مناسب للمناسبات والسهرات
-💖 ومثالي حتى للاستخدام اليومي والدوام
-
-العطر الي تخليه…والكل يسألج:
-شنو هذا العطر؟ 😍
-إذا تحبين العطور الأنثوية الفاكهية
-ننصحج وبقوة بـ عطر NOW الوردي 🥹🎀
-#الاصلي المنشأ الإمارات 🇦🇪💯.</p>
-            <p class="price">15,000 د.ع</p>
-            <a href="https://wa.me/9647826947479?text=أريد طلب منتج:  عطر " class="whatsapp-btn" target="_blank">اطلب عبر واتساب 💬</a>
-        </div>
-
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=400" alt="حمرة">
-            <h3 class="product-name">واقي شمس</h3>
-            <p class="description">واقي شمسي كيميائي من سيليماكس الكورية 🇰🇷.
-
-المميزات الأساسية:
-☀️ حماية قوية من الشمس: SPF50+ PA++++
-☀️ تفتيح فعال للبقع الداكنة.
-☀️ تقليل مظهر المسام.
-☀️ترطيب عالي للبشرة
-☀️ لا يسبب انسداد المسام أو التهيج
-☀️ مناسب للبشرة الدهنية، الجافة، الحساسة والمختلطة.</p>
-            <p class="price">8,000 د.ع</p>
-            <a href="https://wa.me/9647826947479?text=أريد طلب منتج: واقي شمس class="whatsapp-btn" target="_blank">اطلب عبر واتساب 💬</a>
-        </div>
-
+    <div id="admin-section">
+        <h3>قسم الإدمن - إضافة وجبة</h3>
+        <input type="text" id="pName" placeholder="اسم الأكلة">
+        <input type="text" id="pPrice" placeholder="السعر">
+        <input type="text" id="pImage" placeholder="رابط صورة الأكلة (اختياري)">
+        <button class="btn btn-add" onclick="addProduct()">إضافة للمنيو</button>
     </div>
 
-    <script>
-        function searchProducts() {
-            let input = document.getElementById('searchBar').value.toLowerCase();
-            let cards = document.getElementsByClassName('product-card');
-            for (let i = 0; i < cards.length; i++) {
-                let name = cards[i].getElementsByClassName('product-name')[0].innerText.toLowerCase();
-                if (name.includes(input)) {
-                    cards[i].style.display = "";
-                } else {
-                    cards[i].style.display = "none";
-                }
-            }
+    <hr>
+
+    <h3>قائمة الطعام (عرض الزبون)</h3>
+    <div id="productList">
+        </div>
+</div>
+
+<script>
+    // قاعدة بيانات وهمية في الذاكرة
+    let products = [
+        { id: 1, name: "كباب عراقي", price: "12000", image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=200" },
+        { id: 2, name: "شاورما دجاج", price: "5000", image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=200" }
+    ];
+
+    function renderProducts() {
+        const list = document.getElementById('productList');
+        list.innerHTML = "";
+        products.forEach((p, index) => {
+            list.innerHTML += `
+                <div class="card">
+                    <img src="${p.image}" alt="food">
+                    <div>
+                        <strong>${p.name}</strong><br>
+                        <span>السعر: ${p.price} د.ع</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-order" onclick="makeOrder('${p.name}')">طلب</button>
+                        <button class="btn btn-edit" onclick="editProduct(${index})">تعديل</button>
+                        <button class="btn btn-delete" onclick="deleteProduct(${index})">حذف</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function addProduct() {
+        const name = document.getElementById('pName').value;
+        const price = document.getElementById('pPrice').value;
+        const img = document.getElementById('pImage').value || "https://via.placeholder.com/80";
+        
+        if(name && price) {
+            products.push({ id: Date.now(), name: name, price: price, image: img });
+            renderProducts();
+            document.getElementById('pName').value = "";
+            document.getElementById('pPrice').value = "";
         }
-    </script>
+    }
+
+    function deleteProduct(index) {
+        products.splice(index, 1);
+        renderProducts();
+    }
+
+    function editProduct(index) {
+        let newPrice = prompt("أدخل السعر الجديد لـ " + products[index].name);
+        if (newPrice) {
+            products[index].price = newPrice;
+            renderProducts();
+        }
+    }
+
+    function makeOrder(name) {
+        let phone = prompt("أدخل رقم هاتفك لطلب " + name);
+        let location = prompt("أدخل أقرب نقطة دالة");
+        if(phone && location) {
+            alert("✅ تم إرسال الطلب بنجاح!\nالأكلة: " + name + "\nالرقم: " + phone + "\nالمكان: " + location);
+        }
+    }
+
+    // تشغيل العرض عند فتح الصفحة
+    renderProducts();
+</script>
 
 </body>
 </html>
-

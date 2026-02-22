@@ -1,238 +1,127 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>Dark Security Military Edition</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-
-<style>
-
-body{
-margin:0;
-font-family:tahoma;
-background:#020202;
-color:#fff;
-text-align:center;
-}
-
-:root{
---main:#00ffaa;
-}
-
-h2{
-color:var(--main);
-}
-
-input,button{
-width:90%;
-max-width:320px;
-padding:12px;
-margin:8px;
-border-radius:8px;
-border:1px solid var(--main);
-background:transparent;
-color:white;
-}
-
-button{
-background:var(--main);
-color:black;
-font-weight:bold;
-cursor:pointer;
-transition:0.3s;
-}
-
-button:hover{
-transform:scale(1.05);
-}
-
-#log{
-background:black;
-margin-top:20px;
-padding:10px;
-height:140px;
-overflow:auto;
-font-size:12px;
-text-align:right;
-}
-
-.floating{
-position:fixed;
-bottom:25px;
-right:25px;
-background:var(--main);
-padding:20px;
-border-radius:50%;
-cursor:pointer;
-font-size:22px;
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الكوزمتك</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #fdf2f8; 
+            padding: 20px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+        h1 { color: #d81b60; margin-top: 20px; }
+        #searchBar {
+            width: 90%;
+            max-width: 500px;
+            padding: 15px 25px;
+            margin: 20px 0;
+            border: 2px solid #fce4ec;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .products-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .product-card { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 15px; 
+            width: 280px; 
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid #fce4ec;
+        }
+        .product-card img { 
+            width: 100%; 
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px; 
+        }
+        .product-name { color: #333; margin: 15px 0 5px 0; font-size: 1.2em; }
+        .description { color: #777; font-size: 0.9em; height: 40px; margin-bottom: 10px; }
+        .price { color: #d81b60; font-weight: bold; font-size: 1.4em; margin: 10px 0; }
+        .whatsapp-btn {
+            background-color: #25D366; 
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 10px;
+            display: block;
+            font-weight: bold;
+        }
+    </style>
 </head>
-
 <body>
 
-<h2>🛡️ Dark Security Military Engine</h2>
+    <h1>✨ متجري للجمال ✨</h1>
 
-<input id="code" placeholder="كود التفعيل">
-<button onclick="login()">دخول</button>
+    <input type="text" id="searchBar" onkeyup="searchProducts()" placeholder="ابحث عن اسم المنتج...">
 
-<hr>
+    <div class="products-container" id="productList">
 
-<div id="app" style="display:none">
+        <div class="product-card">
+            <img src="https://i.ibb.co/Xf8mX0Y/Pz3qfjs3.jpg" alt="سيروم">
+            <h3 class="product-name">عطر</h3>
+            <p class="description">
 
-<input type="file" id="fileInput">
-<button onclick="scanFile()">🔑 فحص الملف (SHA256 + Risk)</button>
+💖 ثباتية قوية تدوم لـ 24 ساعة
+💖 مناسب للمناسبات والسهرات
+💖 ومثالي حتى للاستخدام اليومي والدوام
 
-<br>
+العطر الي تخليه…والكل يسألج:
+شنو هذا العطر؟ 😍
+إذا تحبين العطور الأنثوية الفاكهية
+ننصحج وبقوة بـ عطر NOW الوردي 🥹🎀
+#الاصلي المنشأ الإمارات 🇦🇪💯.</p>
+            <p class="price">15,000 د.ع</p>
+            <a href="https://wa.me/9647826947479?text=أريد طلب منتج:  عطر " class="whatsapp-btn" target="_blank">اطلب عبر واتساب 💬</a>
+        </div>
 
-<button onclick="scanQR()">📷 فحص QR</button>
+        <div class="product-card">
+            <img src="https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=400" alt="حمرة">
+            <h3 class="product-name">واقي شمس</h3>
+            <p class="description">واقي شمسي كيميائي من سيليماكس الكورية 🇰🇷.
 
-<br>
+المميزات الأساسية:
+☀️ حماية قوية من الشمس: SPF50+ PA++++
+☀️ تفتيح فعال للبقع الداكنة.
+☀️ تقليل مظهر المسام.
+☀️ترطيب عالي للبشرة
+☀️ لا يسبب انسداد المسام أو التهيج
+☀️ مناسب للبشرة الدهنية، الجافة، الحساسة والمختلطة.</p>
+            <p class="price">8,000 د.ع</p>
+            <a href="https://wa.me/9647826947479?text=أريد طلب منتج: واقي شمس class="whatsapp-btn" target="_blank">اطلب عبر واتساب 💬</a>
+        </div>
 
-<input id="textInput" placeholder="اكتب نص للتحليل">
-<button onclick="aiScan()">🧠 تحليل أمني ذكي</button>
+    </div>
 
-<br>
-
-<button onclick="generateReport()">📄 توليد تقرير أمني</button>
-
-<div id="qrContainer"></div>
-
-<div id="log">جاهز...</div>
-
-</div>
-
-<div class="floating" onclick="quickScan()">🔍</div>
-
-<script>
-
-/* LOGIN */
-function login(){
-let code=document.getElementById("code").value;
-
-if(code==="dark-dark"){
-document.getElementById("app").style.display="block";
-}
-else alert("كود غير صحيح");
-}
-
-/* LOG */
-function log(msg){
-let box=document.getElementById("log");
-box.innerHTML="> "+msg+"<br>"+box.innerHTML;
-}
-
-/* Military File Scanner */
-function scanFile(){
-
-let file=document.getElementById("fileInput").files[0];
-
-if(!file){
-alert("اختر ملف أولاً");
-return;
-}
-
-let reader=new FileReader();
-
-reader.onload=function(e){
-
-let hash=sha256(e.target.result);
-
-/* Risk heuristic */
-let risk=0;
-
-if(file.name.includes(".exe")) risk+=30;
-if(file.name.split(".").length>2) risk+=40;
-
-alert("SHA256:\n"+hash+"\nRisk Score: "+Math.min(risk,95)+"%");
-
-log("تم فحص الملف عسكرياً");
-};
-
-reader.readAsArrayBuffer(file);
-}
-
-/* QR Scanner */
-function scanQR(){
-
-let container=document.getElementById("qrContainer");
-container.innerHTML="<div id='qr'></div>";
-
-let scanner=new Html5Qrcode("qr");
-
-scanner.start(
-{facingMode:"environment"},
-{fps:10,qrbox:250},
-text=>{
-let risk=0;
-
-if(text.includes("http")) risk+=20;
-if(text.includes("login")) risk+=25;
-
-alert("QR Content:\n"+text+"\nRisk : "+risk+"%");
-scanner.stop();
-
-log("فحص QR مكتمل");
-},
-()=>{}
-);
-}
-
-/* AI Scam Detector */
-function aiScan(){
-
-let text=document.getElementById("textInput").value;
-
-if(!text){
-alert("اكتب نص");
-return;
-}
-
-let risk=0;
-
-let scamPatterns=[
-"free","win","prize","urgent",
-"bank","verify","password",
-"lottery","update"
-];
-
-scamPatterns.forEach(p=>{
-if(text.toLowerCase().includes(p))
-risk+=12;
-});
-
-risk=Math.min(risk,95);
-
-alert("AI Risk Probability : "+risk+"%");
-log("تحليل ذكاء أمني");
-}
-
-/* Report PDF */
-function generateReport(){
-
-let doc={
-content:[
-{text:"Dark Security Military Report",fontSize:20},
-"----------------------",
-"Security Scan Completed"
-]
-};
-
-pdfMake.createPdf(doc).download("military_report.pdf");
-
-log("تم توليد التقرير");
-}
-
-/* Quick Scan */
-function quickScan(){
-alert("Quick Scan Completed\nNo Threats Found");
-}
-
-</script>
+    <script>
+        function searchProducts() {
+            let input = document.getElementById('searchBar').value.toLowerCase();
+            let cards = document.getElementsByClassName('product-card');
+            for (let i = 0; i < cards.length; i++) {
+                let name = cards[i].getElementsByClassName('product-name')[0].innerText.toLowerCase();
+                if (name.includes(input)) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 
 </body>
 </html>
+

@@ -3,109 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مطعم الضلع - لوحة التحكم</title>
+    <title>متجر الكورسات التعليمية - الوضع الليلي</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
-        header { background: #ff9800; color: white; padding: 15 shadow; text-align: center; border-radius: 10px; }
-        .container { max-width: 800px; margin: auto; }
-        .card { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .card img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; }
-        .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; }
-        .btn-add { background: #4CAF50; color: white; width: 100%; margin-bottom: 20px; font-size: 18px; }
-        .btn-edit { background: #2196F3; color: white; margin-left: 5px; }
-        .btn-delete { background: #f44336; color: white; }
-        .btn-order { background: #ff9800; color: white; }
-        .modal { background: white; padding: 20px; border-radius: 10px; border: 1px solid #ccc; margin-top: 20px; }
-        input { width: 95%; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ddd; }
+        :root {
+            --bg-color: #f4f4f9;
+            --container-bg: #ffffff;
+            --text-color: #333;
+            --btn-bg: #ffffff;
+            --btn-border: #ddd;
+            --content-bg: #ffffff;
+        }
+
+        /* ألوان الوضع الليلي */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --btn-bg: #2d2d2d;
+            --btn-border: #444;
+            --content-bg: #252525;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: var(--container-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* زر تبديل الوضع */
+        .theme-switch {
+            background: none;
+            border: 2px solid #0088cc;
+            color: #0088cc;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .theme-switch:hover {
+            background: #0088cc;
+            color: white;
+        }
+
+        .course-btn {
+            background-color: var(--btn-bg);
+            border: 2px solid var(--btn-border);
+            color: var(--text-color);
+            padding: 15px;
+            width: 100%;
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-btn:hover {
+            opacity: 0.8;
+        }
+
+        .content {
+            display: none;
+            background-color: var(--content-bg);
+            padding: 20px;
+            border: 1px solid var(--btn-border);
+            border-radius: 0 0 8px 8px;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            text-align: right;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            background-color: #0088cc;
+            color: white !important;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 50px;
+            margin-top: 15px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .price-tag {
+            color: #ff4d4d;
+            font-weight: bold;
+            font-size: 1.2em;
+            display: block;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>🍕 مطعم الضلع 🍔</h1>
-        <p>لوحة التحكم والمنيو</p>
-    </header>
+    <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌙 تحويل للوضع المظلم</button>
+    
+    <h2>🚀 قائمة الكورسات التعليمية</h2>
 
-    <div id="admin-section">
-        <h3>قسم الإدمن - إضافة وجبة</h3>
-        <input type="text" id="pName" placeholder="اسم الأكلة">
-        <input type="text" id="pPrice" placeholder="السعر">
-        <input type="text" id="pImage" placeholder="رابط صورة الأكلة (اختياري)">
-        <button class="btn btn-add" onclick="addProduct()">إضافة للمنيو</button>
+    <button class="course-btn" onclick="toggleContent('hitler')">🔥 كورس هتلر 🔥 <span>+</span></button>
+    <div id="hitler" class="content">
+⚡️تم افتتاح كورس هتلر⚡️
+--------------------------------
+✨ركزلي حجي✨
+1-اعلمك ترشق انستا📱
+2-اعلمك ترشق فيسبوك📱
+3-اعلمك ترشق تيك توك📱
+5-اعلمك ترشق تليكرام📱
+--------------------------------
+اعلمك طريقة تفاعل دائمي يعني اول متنشر شي يتفاعلون عليه💎
+--------------------------------
+اعلمك تشغيل ادوات+صنع بوتك خاص فيك وستخراج الايدي مالتك +اعلمك استخراج ايديات فيس+استخراج كوكيز+حل جميع مشاكل بايثون+ادتي الي ابيعها ب30 بدون تشفير#⃣
+--------------------------------
+اعلمك تنشاء حسابات نتلفكس📱
+--------------------------------
+اعلمك تبند حسابات انستا +فك باند انستا+تطير بثوث+تبنيد بثوث❤️‍🔥
+--------------------------------
+اعلمك طير حسابات تيك توك+اداه بلاغات+تبنيد بثوث +تطير بثوث❤️‍🔥
+--------------------------------
+اعلمك طير حسابات فيس+استرجاع حسابك الفيس🟢
+--------------------------------
+اعلمك فك حضر رقم تلجرام+تطير حسابات تلجرام+تطير قناوت تلجرام❓
+--------------------------------
+اعلمك طريقة انشاء قناوت1975💯
+--------------------------------
+اعلمك تشفر اداوت بايثون وتريمكس🕐
+--------------------------------
+اعلمك تصعيد قناوت تلي فوك35الف 📊
+--------------------------------
+اعلمك تصعد حسابات تيك توك 🆕
+--------------------------------
+اعلمك تصعد قناوت تلي حقيقي💰
+--------------------------------
+اعلمك تصعد ستوريات+اعلمك انشاء حسابات انستا وهمي وانشاء جيميلات وهمي⛓
+--------------------------------
+اعلمك تفك سكيور+اعلمك توثق💲
+---------------------------------------------------
+<span class="price-tag">كل هاذا بـ 5$</span>
+استقبل ( اسياسيل _ زين كاش _ ماستر كارد)
+        <a href="https://t.me/D_8_5" class="contact-btn">للتواصل</a>
     </div>
 
-    <hr>
+    <button class="course-btn" onclick="toggleContent('mito')">🌐 كورس ميتو 🌐 <span>+</span></button>
+    <div id="mito" class="content">
+بـ? متوفر كورس ميتو العلم 💱
 
-    <h3>قائمة الطعام (عرض الزبون)</h3>
-    <div id="productList">
-        </div>
+✓/فيديو تعليم سح/ب حسابات انستا+تيك جيميل من الصفر ✅
+✓/ انطيك برنامج اخت/راق عنطريق رابط 🌟
+✓/ادا/-ة اخت/راق انستا 🌟
+✓/اد/اة ص_يد كلاش اوف كلانس🌟
+✓/هك_ر بليارد 😈
+✓/برنامج استخراج كوكيز 🌟
+✓/برنامج اخت/راق شبكات واي فاي 🌟
+✓/كورس تعليم بايثون من صفر 😈
+✓/شرح صنع بوتات🌟
+✓/هك_ر فري فاير 🌟
+✓/بوت اراقام ايراني 🌟
+✓/ 12 موقع استخراج ارقام🌟
+✓ /بوتات ارقام كسر🌟
+✓/مواقع رشق انستا مجاني😈
+✓/مكاتب مدفوع😈
+✓/تفل-يش قناوات تلي 🌟
+✓/توثيق حساب انستقرام ☠️
+✓/ادو-ا-ت سبا/م مدفوع 🧸
+✓/ادو/ات بلا/غات جميع مواقع التواصل 🌟
+✓/برامج فايرو/-سات 😈
+✓/تطبيق فتح سكيور فيس 😈
+✓/اخت/راق شبكات وأي فأي 2😈
+✓/ملف يحتوي على 500 اد/اة بايثون🧸
+✓/تطبيق نسخ التطبيقات ✨
+✓/برنامج فر/متت ضحيه✨.
+✓/اد/اة اخت/راق الهاتف 😈
+✓/تطبيق رشق انستا مدفوع 😈
+✓/دوره كامله لتعلم الأمن السيبراني ☠️
+✓ /موقع لوك للادوات🌟
+✓/ملف تعليم صناعت برامج اخت/راق 😈
+✓/ملف يحتوي على 1750 ثغره منوعه للازالت الحسابات و لي فك الحظر و الكثير🌟
+✓/ترويج على انستا مجاني😈
+✓/برنامج تهكير العاب
+✓/صي-د يوزرات انستا رباعي💎
+✓/صي-د يوزرات تيك رباعي💎
+✓/صي-د يوزرات تليجرام مميز💎
+✓/صي-د ببجي عألي💎
+✓/صي-د حسابات بيس🛡
+✓/صي-د فيزات وهميه💎
+✓/اخت/راق الهاتف 💎
+✓/كورس برمجت تطبيقات ☠️
+✓/برنامج سح-ب ايميلات 😂
+✓/تطبيق تشفير ادو/ات بايثون مدفوع 😉
+✓/طريقه رشق 100K انستا مجانييي 🌟
+✓/اعلمك توثق حسابك تيك تيك 🙂
+
+<span class="price-tag">بـ 5$ ( اسياسيل _ زين كاش _ ماستر كارد _ اثير)</span>
+        <a href="https://t.me/D_8_5" class="contact-btn">للتواصل</a>
+    </div>
+
+    <button class="course-btn" onclick="toggleContent('band')">⏲️ كورس باند ⏲️ <span>+</span></button>
+    <div id="band" class="content">
+دور الباند الجديدة ✅
+تنقسم الدورة قسمين ( باند انستجرام + تليجرام ) 🎃
+
+- راح تتعلم في الدورة:
+تبنيد كروبات، تبنيد قنوات، تبنيد حسابات، فك باند كروبات، فك باند قنوات، راح تتعلم تشد، وادوات وشروحات واشياء ثانية…
+
+<span class="price-tag">كل هذا بسعر 10$ فقط 😵‍💫</span>
+استقبل ( اسياسيل _ زين كاش _ ماستر كارد)
+        <a href="https://t.me/D_8_5" class="contact-btn">للتواصل</a>
+    </div>
+
+    <button class="course-btn" onclick="toggleContent('prog')">🎲 كورس البرمجة 🎲 <span>+</span></button>
+    <div id="prog" class="content">
+سلام عليكم تم فتح دورة صـ/ـنع ادوات بايـ/ـثـ/ـون 🔥
+
+يوجد في الدورة 🔥
+1⃣ طريقه صنع اد،،اة انستا
+2⃣ طريقه صنع اد،،اة فيس
+3⃣ طريقه صنع ادا،،ة تيك توك 
+✅تتعلم كلشي اعرفه اني
+✅سعر الدورة 5$ 😀
+✅اخليك اصير مطـ/ـور حالك من حال المـ/ـطـ/ـورين الباقين 💻
+
+        <a href="https://t.me/D_8_5" class="contact-btn">للتواصل</a>
+    </div>
+
+    <button class="course-btn" onclick="toggleContent('f16')">🎱 كورس F16 🎱 <span>+</span></button>
+    <div id="f16" class="content">
+تم انطلاق العملاق كورس F16 📥
+شرط كل هذا تعليم من الصفر:
+𝟏-𝟏𝟐 تعليم الاختراق، كالي لينكس، التداول، صنع الفيروسات، والهكر الأخلاقي.
+
+<span class="price-tag">كُل هاذ بـ 5 اسيا او ماستر او اثير او زين كاش</span>
+        <a href="https://t.me/D_8_5" class="contact-btn">للتواصل</a>
+    </div>
+
 </div>
 
 <script>
-    // قاعدة بيانات وهمية في الذاكرة
-    let products = [
-        { id: 1, name: "كباب عراقي", price: "12000", image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=200" },
-        { id: 2, name: "شاورما دجاج", price: "5000", image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=200" }
-    ];
-
-    function renderProducts() {
-        const list = document.getElementById('productList');
-        list.innerHTML = "";
-        products.forEach((p, index) => {
-            list.innerHTML += `
-                <div class="card">
-                    <img src="${p.image}" alt="food">
-                    <div>
-                        <strong>${p.name}</strong><br>
-                        <span>السعر: ${p.price} د.ع</span>
-                    </div>
-                    <div>
-                        <button class="btn btn-order" onclick="makeOrder('${p.name}')">طلب</button>
-                        <button class="btn btn-edit" onclick="editProduct(${index})">تعديل</button>
-                        <button class="btn btn-delete" onclick="deleteProduct(${index})">حذف</button>
-                    </div>
-                </div>
-            `;
-        });
+    function toggleContent(id) {
+        var content = document.getElementById(id);
+        content.style.display = (content.style.display === "block") ? "none" : "block";
     }
 
-    function addProduct() {
-        const name = document.getElementById('pName').value;
-        const price = document.getElementById('pPrice').value;
-        const img = document.getElementById('pImage').value || "https://via.placeholder.com/80";
-        
-        if(name && price) {
-            products.push({ id: Date.now(), name: name, price: price, image: img });
-            renderProducts();
-            document.getElementById('pName').value = "";
-            document.getElementById('pPrice').value = "";
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.getElementById('themeBtn');
+        if (body.hasAttribute('data-theme')) {
+            body.removeAttribute('data-theme');
+            btn.innerHTML = "🌙 تحويل للوضع المظلم";
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            btn.innerHTML = "☀️ تحويل للوضع الفاتح";
         }
     }
-
-    function deleteProduct(index) {
-        products.splice(index, 1);
-        renderProducts();
-    }
-
-    function editProduct(index) {
-        let newPrice = prompt("أدخل السعر الجديد لـ " + products[index].name);
-        if (newPrice) {
-            products[index].price = newPrice;
-            renderProducts();
-        }
-    }
-
-    function makeOrder(name) {
-        let phone = prompt("أدخل رقم هاتفك لطلب " + name);
-        let location = prompt("أدخل أقرب نقطة دالة");
-        if(phone && location) {
-            alert("✅ تم إرسال الطلب بنجاح!\nالأكلة: " + name + "\nالرقم: " + phone + "\nالمكان: " + location);
-        }
-    }
-
-    // تشغيل العرض عند فتح الصفحة
-    renderProducts();
 </script>
 
 </body>

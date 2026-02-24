@@ -3,281 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر الكورسات التعليمية - الوضع الليلي</title>
+    <title>منصة دارك - Portfolio</title>
     <style>
-        :root {
-            --bg-color: #f4f4f9;
-            --container-bg: #ffffff;
-            --text-color: #333;
-            --btn-bg: #ffffff;
-            --btn-border: #ddd;
-            --content-bg: #ffffff;
-        }
-
-        /* ألوان الوضع الليلي */
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --container-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --btn-bg: #2d2d2d;
-            --btn-border: #444;
-            --content-bg: #252525;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background-color: var(--container-bg);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        /* زر تبديل الوضع */
-        .theme-switch {
-            background: none;
-            border: 2px solid #0088cc;
-            color: #0088cc;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-bottom: 20px;
-            transition: 0.3s;
-        }
-        .theme-switch:hover {
-            background: #0088cc;
-            color: white;
-        }
-
-        .course-btn {
-            background-color: var(--btn-bg);
-            border: 2px solid var(--btn-border);
-            color: var(--text-color);
-            padding: 15px;
-            width: 100%;
-            text-align: right;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            transition: 0.3s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .course-btn:hover {
-            opacity: 0.8;
-        }
-
-        .content {
-            display: none;
-            background-color: var(--content-bg);
-            padding: 20px;
-            border: 1px solid var(--btn-border);
-            border-radius: 0 0 8px 8px;
-            margin-top: -10px;
-            margin-bottom: 20px;
-            text-align: right;
+        /* --- الأساسيات --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: #0a0b1e; 
+            color: white; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
             line-height: 1.6;
-            white-space: pre-line;
+            scroll-behavior: smooth;
+        }
+        .main-container { 
+            min-height: 100vh; 
+            background: radial-gradient(circle at top right, #1e1b4b 0%, #0a0b1e 50%, #020617 100%); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px; 
         }
 
-        .contact-btn {
-            display: inline-block;
-            background-color: #0088cc;
-            color: white !important;
-            padding: 10px 25px;
-            text-decoration: none;
-            border-radius: 50px;
-            margin-top: 15px;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
+        /* --- الهيدر --- */
+        .navbar { width: 100%; max-width: 1000px; display: flex; justify-content: center; padding: 20px 0; border-bottom: 1px solid rgba(168, 85, 247, 0.2); margin-bottom: 50px; }
+        .logo { font-size: 1.8rem; font-weight: bold; color: #a855f7; text-shadow: 0 0 10px rgba(168, 85, 247, 0.5); }
 
-        .price-tag {
-            color: #ff4d4d;
-            font-weight: bold;
-            font-size: 1.2em;
-            display: block;
-            margin: 10px 0;
+        /* --- قسم الهيرو --- */
+        .hero-content { text-align: center; max-width: 800px; animation: fadeIn 1.5s ease-in-out; margin-bottom: 80px; }
+        .main-title { font-size: 2.8rem; margin-bottom: 15px; font-weight: 800; }
+        .highlight { color: #a855f7; background: linear-gradient(90deg, #a855f7, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .sub-title { color: #2dd4bf; font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; display: block; }
+        .description { font-size: 1.1rem; color: #94a3b8; margin-bottom: 40px; }
+        .cta-button { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; border: none; padding: 15px 45px; border-radius: 50px; cursor: pointer; text-decoration: none; display: inline-block; transition: 0.3s; font-weight: bold; }
+        .cta-button:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(168, 85, 247, 0.5); }
+
+        /* --- قسم الإحصائيات --- */
+        .stats-container { width: 100%; max-width: 900px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 50px; }
+        .stat-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(168, 85, 247, 0.2); padding: 30px; border-radius: 20px; text-align: center; transition: 0.4s; backdrop-filter: blur(10px); }
+        .stat-card:hover { border-color: #a855f7; transform: translateY(-10px); background: rgba(168, 85, 247, 0.05); }
+        .stat-number { font-size: 2.5rem; font-weight: bold; color: #a855f7; display: block; }
+
+        /* --- [إضافة: قسم مهاراتي] --- */
+        .skills-section { width: 100%; max-width: 1000px; margin-top: 100px; text-align: center; }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; }
+        .skill-item { background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(45, 212, 191, 0.3); padding: 25px; border-radius: 15px; transition: 0.3s; }
+        .skill-item:hover { border-style: solid; border-color: #2dd4bf; background: rgba(45, 212, 191, 0.05); }
+        .skill-item h3 { color: #2dd4bf; margin-bottom: 10px; }
+
+        /* --- [إضافة: قسم انطلق الآن / التواصل] --- */
+        .contact-section { width: 100%; max-width: 800px; margin-top: 100px; text-align: center; padding-bottom: 100px; }
+        .social-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
+        .social-card { 
+            background: #161b33; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            padding: 20px 40px; 
+            border-radius: 15px; 
+            text-decoration: none; 
+            color: white; 
+            font-weight: bold; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            transition: 0.3s;
         }
+        .tg { border-bottom: 4px solid #0088cc; }
+        .tt { border-bottom: 4px solid #ff0050; }
+        .social-card:hover { transform: scale(1.05); background: #1f264a; }
+
+        /* --- التذييل --- */
+        footer { margin-top: auto; padding: 20px; color: #555; font-size: 0.9rem; text-align: center; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌙 تحويل للوضع المظلم</button>
-    
-    <h2>🚀 قائمة الكورسات التعليمية</h2>
+    <div class="main-container">
+        <nav class="navbar">
+            <div class="logo">منصة دارك</div>
+        </nav>
 
-    <button class="course-btn" onclick="toggleContent('hitler')">🔥 كورس هتلر 🔥 <span>+</span></button>
-    <div id="hitler" class="content">
-⚡️تم افتتاح كورس هتلر⚡️
---------------------------------
-✨ركزلي حجي✨
-1-اعلمك ترشق انستا📱
-2-اعلمك ترشق فيسبوك📱
-3-اعلمك ترشق تيك توك📱
-5-اعلمك ترشق تليكرام📱
---------------------------------
-اعلمك طريقة تفاعل دائمي يعني اول متنشر شي يتفاعلون عليه💎
---------------------------------
-اعلمك تشغيل ادوات+صنع بوتك خاص فيك وستخراج الايدي مالتك +اعلمك استخراج ايديات فيس+استخراج كوكيز+حل جميع مشاكل بايثون+ادتي الي ابيعها ب30 بدون تشفير#⃣
---------------------------------
-اعلمك تنشاء حسابات نتلفكس📱
---------------------------------
-اعلمك تبند حسابات انستا +فك باند انستا+تطير بثوث+تبنيد بثوث❤️‍🔥
---------------------------------
-اعلمك طير حسابات تيك توك+اداه بلاغات+تبنيد بثوث +تطير بثوث❤️‍🔥
---------------------------------
-اعلمك طير حسابات فيس+استرجاع حسابك الفيس🟢
---------------------------------
-اعلمك فك حضر رقم تلجرام+تطير حسابات تلجرام+تطير قناوت تلجرام❓
---------------------------------
-اعلمك طريقة انشاء قناوت1975💯
---------------------------------
-اعلمك تشفر اداوت بايثون وتريمكس🕐
---------------------------------
-اعلمك تصعيد قناوت تلي فوك35الف 📊
---------------------------------
-اعلمك تصعد حسابات تيك توك 🆕
---------------------------------
-اعلمك تصعد قناوت تلي حقيقي💰
---------------------------------
-اعلمك تصعد ستوريات+اعلمك انشاء حسابات انستا وهمي وانشاء جيميلات وهمي⛓
---------------------------------
-اعلمك تفك سكيور+اعلمك توثق💲
----------------------------------------------------
-<span class="price-tag">كل هاذا بـ 5$</span>
-استقبل ( اسياسيل _ زين كاش _ ماستر كارد)
-        <a href="https://t.me/D_8_5" class="contact-btn">للتواصل</a>
+        <section class="hero-content">
+            <h1 class="main-title">أهلاً بك في <span class="highlight">عالمي البرمجي</span></h1>
+            <span class="sub-title">مطور ويب | مصمم | مبدع</span>
+            <p class="description">متخصص في تصميم وتطوير وبرمجة مواقع ومنصات رقمية أحول الأفكار إلى حلول رقمية احترافية.</p>
+            <a href="https://t.me/D_8_5" class="cta-button">تواصل معي الآن</a>
+        </section>
+
+        <div class="stats-container">
+            <div class="stat-card"><span class="stat-number">+3</span><span>سنوات خبرة</span></div>
+            <div class="stat-card"><span class="stat-number">+36</span><span>مشروع منجز</span></div>
+            <div class="stat-card"><span class="stat-number">+21</span><span>عميل سعيد</span></div>
+        </div>
+
+        <section class="skills-section">
+            <h2 class="main-title" style="font-size: 2rem;">مهاراتي</h2>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <h3>تطوير الويب</h3>
+                    <p>بناء مواقع سريعة ومتجاوبة باستخدام أحدث التقنيات.</p>
+                </div>
+                <div class="skill-item">
+                    <h3>التصميم الإبداعي</h3>
+                    <p>واجهات مستخدم (UI/UX) جذابة وسهلة الاستخدام.</p>
+                </div>
+                <div class="skill-item">
+                    <h3>الأداء والسرعة</h3>
+                    <p>تحسين المواقع لتتصدر نتائج البحث وتعمل بلمح البصر.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <h2 class="main-title" style="font-size: 2rem;">انطلق الآن</h2>
+            <p>لإنشاء موقعك أو تصميمك الخاص، لا تتردد في التواصل معي عبر المنصة التي تناسبك:</p>
+            
+            <div class="social-links">
+                <a href="https://t.me/D_8_5" class="social-card tg" target="_blank">
+                    <span>Telegram</span>
+                </a>
+                <a href="https://www.tiktok.com/@d_8_98?_r=1&_t=ZS-94B3uFMPR5w" class="social-card tt" target="_blank">
+                    <span>TikTok</span>
+                </a>
+            </div>
+        </section>
+
+        <footer>
+            © 2026 جميع الحقوق محفوظة | منصة دارك
+        </footer>
     </div>
-
-    <button class="course-btn" onclick="toggleContent('mito')">🌐 كورس ميتو 🌐 <span>+</span></button>
-    <div id="mito" class="content">
-بـ? متوفر كورس ميتو العلم 💱
-
-✓/فيديو تعليم سح/ب حسابات انستا+تيك جيميل من الصفر ✅
-✓/ انطيك برنامج اخت/راق عنطريق رابط 🌟
-✓/ادا/-ة اخت/راق انستا 🌟
-✓/اد/اة ص_يد كلاش اوف كلانس🌟
-✓/هك_ر بليارد 😈
-✓/برنامج استخراج كوكيز 🌟
-✓/برنامج اخت/راق شبكات واي فاي 🌟
-✓/كورس تعليم بايثون من صفر 😈
-✓/شرح صنع بوتات🌟
-✓/هك_ر فري فاير 🌟
-✓/بوت اراقام ايراني 🌟
-✓/ 12 موقع استخراج ارقام🌟
-✓ /بوتات ارقام كسر🌟
-✓/مواقع رشق انستا مجاني😈
-✓/مكاتب مدفوع😈
-✓/تفل-يش قناوات تلي 🌟
-✓/توثيق حساب انستقرام ☠️
-✓/ادو-ا-ت سبا/م مدفوع 🧸
-✓/ادو/ات بلا/غات جميع مواقع التواصل 🌟
-✓/برامج فايرو/-سات 😈
-✓/تطبيق فتح سكيور فيس 😈
-✓/اخت/راق شبكات وأي فأي 2😈
-✓/ملف يحتوي على 500 اد/اة بايثون🧸
-✓/تطبيق نسخ التطبيقات ✨
-✓/برنامج فر/متت ضحيه✨.
-✓/اد/اة اخت/راق الهاتف 😈
-✓/تطبيق رشق انستا مدفوع 😈
-✓/دوره كامله لتعلم الأمن السيبراني ☠️
-✓ /موقع لوك للادوات🌟
-✓/ملف تعليم صناعت برامج اخت/راق 😈
-✓/ملف يحتوي على 1750 ثغره منوعه للازالت الحسابات و لي فك الحظر و الكثير🌟
-✓/ترويج على انستا مجاني😈
-✓/برنامج تهكير العاب
-✓/صي-د يوزرات انستا رباعي💎
-✓/صي-د يوزرات تيك رباعي💎
-✓/صي-د يوزرات تليجرام مميز💎
-✓/صي-د ببجي عألي💎
-✓/صي-د حسابات بيس🛡
-✓/صي-د فيزات وهميه💎
-✓/اخت/راق الهاتف 💎
-✓/كورس برمجت تطبيقات ☠️
-✓/برنامج سح-ب ايميلات 😂
-✓/تطبيق تشفير ادو/ات بايثون مدفوع 😉
-✓/طريقه رشق 100K انستا مجانييي 🌟
-✓/اعلمك توثق حسابك تيك تيك 🙂
-
-<span class="price-tag">بـ 5$ ( اسياسيل _ زين كاش _ ماستر كارد _ اثير)</span>
-        <a href="https://t.me/D_8_5" class="contact-btn">للتواصل</a>
-    </div>
-
-    <button class="course-btn" onclick="toggleContent('band')">⏲️ كورس باند ⏲️ <span>+</span></button>
-    <div id="band" class="content">
-دور الباند الجديدة ✅
-تنقسم الدورة قسمين ( باند انستجرام + تليجرام ) 🎃
-
-- راح تتعلم في الدورة:
-تبنيد كروبات، تبنيد قنوات، تبنيد حسابات، فك باند كروبات، فك باند قنوات، راح تتعلم تشد، وادوات وشروحات واشياء ثانية…
-
-<span class="price-tag">كل هذا بسعر 10$ فقط 😵‍💫</span>
-استقبل ( اسياسيل _ زين كاش _ ماستر كارد)
-        <a href="https://t.me/D_8_5" class="contact-btn">للتواصل</a>
-    </div>
-
-    <button class="course-btn" onclick="toggleContent('prog')">🎲 كورس البرمجة 🎲 <span>+</span></button>
-    <div id="prog" class="content">
-سلام عليكم تم فتح دورة صـ/ـنع ادوات بايـ/ـثـ/ـون 🔥
-
-يوجد في الدورة 🔥
-1⃣ طريقه صنع اد،،اة انستا
-2⃣ طريقه صنع اد،،اة فيس
-3⃣ طريقه صنع ادا،،ة تيك توك 
-✅تتعلم كلشي اعرفه اني
-✅سعر الدورة 5$ 😀
-✅اخليك اصير مطـ/ـور حالك من حال المـ/ـطـ/ـورين الباقين 💻
-
-        <a href="https://t.me/D_8_5" class="contact-btn">للتواصل</a>
-    </div>
-
-    <button class="course-btn" onclick="toggleContent('f16')">🎱 كورس F16 🎱 <span>+</span></button>
-    <div id="f16" class="content">
-تم انطلاق العملاق كورس F16 📥
-شرط كل هذا تعليم من الصفر:
-𝟏-𝟏𝟐 تعليم الاختراق، كالي لينكس، التداول، صنع الفيروسات، والهكر الأخلاقي.
-
-<span class="price-tag">كُل هاذ بـ 5 اسيا او ماستر او اثير او زين كاش</span>
-        <a href="https://t.me/D_8_5" class="contact-btn">للتواصل</a>
-    </div>
-
-</div>
-
-<script>
-    function toggleContent(id) {
-        var content = document.getElementById(id);
-        content.style.display = (content.style.display === "block") ? "none" : "block";
-    }
-
-    function toggleTheme() {
-        const body = document.body;
-        const btn = document.getElementById('themeBtn');
-        if (body.hasAttribute('data-theme')) {
-            body.removeAttribute('data-theme');
-            btn.innerHTML = "🌙 تحويل للوضع المظلم";
-        } else {
-            body.setAttribute('data-theme', 'dark');
-            btn.innerHTML = "☀️ تحويل للوضع الفاتح";
-        }
-    }
-</script>
 
 </body>
 </html>

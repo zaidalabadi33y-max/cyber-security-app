@@ -3,134 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة دارك - Portfolio</title>
+    <title>منصة دارك | عباس ماجد</title>
     <style>
         /* --- الأساسيات --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background-color: #0a0b1e; 
-            color: white; 
+            background-color: #0a0b1e; color: white; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
-            line-height: 1.6;
-            scroll-behavior: smooth;
+            line-height: 1.6; scroll-behavior: smooth;
+            overflow-x: hidden; cursor: none; /* إخفاء الماوس للتأثير الجديد */
         }
+
+        /* 1. شريط تقدم القراءة */
+        #progress-bar {
+            position: fixed; top: 0; left: 0; height: 4px;
+            background: linear-gradient(90deg, #a855f7, #2dd4bf);
+            width: 0%; z-index: 10000; transition: width 0.1s;
+        }
+
+        /* 2. خلفية النجوم */
+        .stars-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; overflow: hidden; background: radial-gradient(circle at center, #1b1e3f 0%, #0a0b1e 100%);
+        }
+        .star {
+            position: absolute; background: white; border-radius: 50%;
+            animation: moveStars linear infinite, fadeInOut 5s infinite;
+        }
+        @keyframes moveStars { from { transform: translateY(0); } to { transform: translateY(-100vh); } }
+        @keyframes fadeInOut { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+
+        /* 3. تأثير الماوس المضيء */
+        .cursor-glow {
+            position: fixed; width: 20px; height: 20px;
+            background: #a855f7; border-radius: 50%;
+            pointer-events: none; transform: translate(-50%, -50%);
+            z-index: 9999; filter: blur(5px); box-shadow: 0 0 15px #a855f7, 0 0 30px #6366f1;
+            transition: transform 0.1s ease;
+        }
+
         .main-container { 
-            min-height: 100vh; 
-            background: radial-gradient(circle at top right, #1e1b4b 0%, #0a0b1e 50%, #020617 100%); 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 20px; 
+            position: relative; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; 
+            padding: 20px; z-index: 5;
         }
 
-        /* --- الهيدر --- */
-        .navbar { width: 100%; max-width: 1000px; display: flex; justify-content: center; padding: 20px 0; border-bottom: 1px solid rgba(168, 85, 247, 0.2); margin-bottom: 50px; }
-        .logo { font-size: 1.8rem; font-weight: bold; color: #a855f7; text-shadow: 0 0 10px rgba(168, 85, 247, 0.5); }
-
-        /* --- قسم الهيرو --- */
-        .hero-content { text-align: center; max-width: 800px; animation: fadeIn 1.5s ease-in-out; margin-bottom: 80px; }
-        .main-title { font-size: 2.8rem; margin-bottom: 15px; font-weight: 800; }
-        .highlight { color: #a855f7; background: linear-gradient(90deg, #a855f7, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .sub-title { color: #2dd4bf; font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; display: block; }
-        .description { font-size: 1.1rem; color: #94a3b8; margin-bottom: 40px; }
-        .cta-button { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; border: none; padding: 15px 45px; border-radius: 50px; cursor: pointer; text-decoration: none; display: inline-block; transition: 0.3s; font-weight: bold; }
-        .cta-button:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(168, 85, 247, 0.5); }
-
-        /* --- قسم الإحصائيات --- */
-        .stats-container { width: 100%; max-width: 900px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 50px; }
-        .stat-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(168, 85, 247, 0.2); padding: 30px; border-radius: 20px; text-align: center; transition: 0.4s; backdrop-filter: blur(10px); }
-        .stat-card:hover { border-color: #a855f7; transform: translateY(-10px); background: rgba(168, 85, 247, 0.05); }
-        .stat-number { font-size: 2.5rem; font-weight: bold; color: #a855f7; display: block; }
-
-        /* --- [إضافة: قسم مهاراتي] --- */
-        .skills-section { width: 100%; max-width: 1000px; margin-top: 100px; text-align: center; }
-        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; }
-        .skill-item { background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(45, 212, 191, 0.3); padding: 25px; border-radius: 15px; transition: 0.3s; }
-        .skill-item:hover { border-style: solid; border-color: #2dd4bf; background: rgba(45, 212, 191, 0.05); }
-        .skill-item h3 { color: #2dd4bf; margin-bottom: 10px; }
-
-        /* --- [إضافة: قسم انطلق الآن / التواصل] --- */
-        .contact-section { width: 100%; max-width: 800px; margin-top: 100px; text-align: center; padding-bottom: 100px; }
-        .social-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
-        .social-card { 
-            background: #161b33; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            padding: 20px 40px; 
-            border-radius: 15px; 
-            text-decoration: none; 
-            color: white; 
-            font-weight: bold; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            transition: 0.3s;
+        /* 4. تأثير الزجاج (Glassmorphism) */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 20px; padding: 30px;
+            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .tg { border-bottom: 4px solid #0088cc; }
-        .tt { border-bottom: 4px solid #ff0050; }
-        .social-card:hover { transform: scale(1.05); background: #1f264a; }
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #a855f7;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.2);
+        }
 
-        /* --- التذييل --- */
-        footer { margin-top: auto; padding: 20px; color: #555; font-size: 0.9rem; text-align: center; }
+        /* الهيدر والعناوين */
+        .navbar { width: 100%; max-width: 1000px; text-align: center; padding: 20px; margin-bottom: 50px; }
+        .logo { font-size: 2.2rem; font-weight: 800; color: #a855f7; text-shadow: 0 0 15px #a855f7; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-content { text-align: center; max-width: 800px; margin-bottom: 60px; }
+        .main-title { font-size: 3rem; margin-bottom: 15px; }
+        .highlight { color: #a855f7; }
+
+        /* 5. تأثير الكتابة الآلية */
+        .typewriter { color: #2dd4bf; font-weight: bold; border-left: 3px solid #a855f7; padding-left: 5px; }
+
+        .cta-button {
+            margin-top: 30px; background: linear-gradient(45deg, #a855f7, #6366f1);
+            color: white; padding: 15px 40px; border-radius: 50px;
+            text-decoration: none; font-weight: bold; display: inline-block;
+            box-shadow: 0 10px 20px rgba(168, 85, 247, 0.3); transition: 0.3s;
+        }
+
+        /* قسم الإحصائيات مع عداد */
+        .stats-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 20px; width: 100%; max-width: 900px; margin-bottom: 80px;
+        }
+        .stat-num { font-size: 2.8rem; font-weight: bold; color: #a855f7; display: block; }
+
+        /* قسم المهارات (المحذوف سابقاً تم إرجاعه) */
+        .skills-section { width: 100%; max-width: 1000px; text-align: center; margin-bottom: 80px; }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 40px; }
+        .skill-item h3 { color: #2dd4bf; margin-bottom: 12px; font-size: 1.4rem; }
+        .skill-item p { color: #94a3b8; font-size: 1rem; }
+
+        .social-links { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .social-item { 
+            padding: 15px 35px; border-radius: 15px; text-decoration: none; color: white;
+            font-weight: bold; transition: 0.3s; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .social-item:hover { background: #a855f7; transform: scale(1.1); }
+
+        /* 6. التنبيه (Toast) */
+        #welcome-toast {
+            position: fixed; bottom: -100px; left: 20px; background: #a855f7;
+            padding: 15px 25px; border-radius: 10px; transition: 0.5s; z-index: 10001;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        #welcome-toast.show { bottom: 20px; }
+
     </style>
 </head>
 <body>
 
+    <div id="progress-bar"></div>
+    <div class="stars-container"></div>
+    <div class="cursor-glow"></div>
+    <div id="welcome-toast">مرحباً بك في منصة دارك! 🚀</div>
+
     <div class="main-container">
         <nav class="navbar">
-            <div class="logo">منصة دارك</div>
+            <div class="logo">DARK 101</div>
         </nav>
 
         <section class="hero-content">
-            <h1 class="main-title">أهلاً بك في <span class="highlight">عالمي البرمجي</span></h1>
-            <span class="sub-title">مطور ويب | مصمم | مبدع</span>
-            <p class="description">متخصص في تصميم وتطوير وبرمجة مواقع ومنصات رقمية أحول الأفكار إلى حلول رقمية احترافية.</p>
+            <h1 class="main-title">أنا <span class="highlight">عباس ماجد</span></h1>
+            <div style="font-size: 1.6rem; margin-bottom: 20px;">
+                محترف في <span class="typewriter" id="typewriter"></span>
+            </div>
+            <p style="color: #94a3b8; font-size: 1.1rem;">أحول الأفكار المعقدة إلى واجهات رقمية بسيطة ومبهرة.</p>
             <a href="https://t.me/D_8_5" class="cta-button">تواصل معي الآن</a>
         </section>
 
-        <div class="stats-container">
-            <div class="stat-card"><span class="stat-number">+3</span><span>سنوات خبرة</span></div>
-            <div class="stat-card"><span class="stat-number">+36</span><span>مشروع منجز</span></div>
-            <div class="stat-card"><span class="stat-number">+21</span><span>عميل سعيد</span></div>
+        <div class="stats-grid">
+            <div class="glass-card">
+                <span class="stat-num" data-target="3">0</span>
+                <span>سنوات الخبرة</span>
+            </div>
+            <div class="glass-card">
+                <span class="stat-num" data-target="36">0</span>
+                <span>مشروع منجز</span>
+            </div>
+            <div class="glass-card">
+                <span class="stat-num" data-target="21">0</span>
+                <span>عميل سعيد</span>
+            </div>
         </div>
 
         <section class="skills-section">
-            <h2 class="main-title" style="font-size: 2rem;">مهاراتي</h2>
+            <h2 style="font-size: 2.2rem; margin-bottom: 10px;">مهاراتي</h2>
             <div class="skills-grid">
-                <div class="skill-item">
+                <div class="glass-card skill-item">
                     <h3>تطوير الويب</h3>
-                    <p>بناء مواقع سريعة ومتجاوبة باستخدام أحدث التقنيات.</p>
+                    <p>بناء مواقع سريعة ومتجاوبة باستخدام أحدث التقنيات البرمجية العالمية.</p>
                 </div>
-                <div class="skill-item">
+                <div class="glass-card skill-item">
                     <h3>التصميم الإبداعي</h3>
-                    <p>واجهات مستخدم (UI/UX) جذابة وسهلة الاستخدام.</p>
+                    <p>واجهات مستخدم (UI/UX) جذابة وسهلة الاستخدام تضمن أفضل تجربة للزائر.</p>
                 </div>
-                <div class="skill-item">
+                <div class="glass-card skill-item">
                     <h3>الأداء والسرعة</h3>
-                    <p>تحسين المواقع لتتصدر نتائج البحث وتعمل بلمح البصر.</p>
+                    <p>تحسين المواقع لتتصدر نتائج البحث (SEO) وتعمل بلمح البصر على كافة الأجهزة.</p>
                 </div>
             </div>
         </section>
 
-        <section class="contact-section">
-            <h2 class="main-title" style="font-size: 2rem;">انطلق الآن</h2>
-            <p>لإنشاء موقعك أو تصميمك الخاص، لا تتردد في التواصل معي عبر المنصة التي تناسبك:</p>
-            
+        <section style="text-align:center; margin-bottom: 100px;">
+            <h2 style="margin-bottom: 30px;">تابعني على</h2>
             <div class="social-links">
-                <a href="https://t.me/D_8_5" class="social-card tg" target="_blank">
-                    <span>Telegram</span>
-                </a>
-                <a href="https://www.tiktok.com/@d_8_98?_r=1&_t=ZS-94B3uFMPR5w" class="social-card tt" target="_blank">
-                    <span>TikTok</span>
-                </a>
+                <a href="https://t.me/D_8_5" class="social-item">Telegram</a>
+                <a href="https://www.tiktok.com/@d_8_98" class="social-item">TikTok</a>
             </div>
         </section>
 
-        <footer>
-            © 2026 جميع الحقوق محفوظة | منصة دارك
-        </footer>
+        <footer style="opacity: 0.4; font-size: 0.9rem;">© 2026 منصة دارك | عباس ماجد</footer>
     </div>
 
+    <script>
+        // 1. توليد النجوم
+        const starsContainer = document.querySelector('.stars-container');
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size; star.style.height = size;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // 2. حركة الماوس المضيء
+        const cursor = document.querySelector('.cursor-glow');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // 3. تأثير الكتابة الآلية
+        const words = ["تطوير الويب", "التصميم الإبداعي", "برمجة المواقع", "UI/UX Design"];
+        let wordIndex = 0; let charIndex = 0; let isDeleting = false;
+        const typeTarget = document.getElementById('typewriter');
+
+        function type() {
+            const currentWord = words[wordIndex];
+            if (isDeleting) {
+                typeTarget.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typeTarget.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                isDeleting = true; setTimeout(type, 2000);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false; wordIndex = (wordIndex + 1) % words.length;
+                setTimeout(type, 500);
+            } else {
+                setTimeout(type, isDeleting ? 100 : 200);
+            }
+        }
+        type();
+
+        // 4. عداد الأرقام عند التحميل
+        const stats = document.querySelectorAll('.stat-num');
+        stats.forEach(stat => {
+            const updateCount = () => {
+                const target = +stat.getAttribute('data-target');
+                const count = +stat.innerText.replace('+', '');
+                const speed = target / 50;
+                if (count < target) {
+                    stat.innerText = Math.ceil(count + speed);
+                    setTimeout(updateCount, 40);
+                } else { stat.innerText = target + "+"; }
+            };
+            updateCount();
+        });
+
+        // 5. شريط التقدم العلوي
+        window.onscroll = () => {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.width = scrolled + "%";
+        };
+
+        // 6. رسالة الترحيب (Toast)
+        window.onload = () => {
+            setTimeout(() => { document.getElementById('welcome-toast').classList.add('show'); }, 2000);
+            setTimeout(() => { document.getElementById('welcome-toast').classList.remove('show'); }, 7000);
+        };
+
+        // 8. تأثير الشرارات عند الضغط (Particle Click)
+        document.addEventListener('click', (e) => {
+            for(let i=0; i<8; i++) {
+                const p = document.createElement('div');
+                p.style.position = 'fixed';
+                p.style.left = e.clientX + 'px';
+                p.style.top = e.clientY + 'px';
+                p.style.width = '5px'; p.style.height = '5px';
+                p.style.background = '#a855f7';
+                p.style.borderRadius = '50%';
+                p.style.pointerEvents = 'none';
+                p.animate([
+                    { transform: 'translate(0,0) scale(1)', opacity: 1 },
+                    { transform: `translate(${(Math.random()-0.5)*100}px, ${(Math.random()-0.5)*100}px) scale(0)`, opacity: 0 }
+                ], { duration: 500 });
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 500);
+            }
+        });
+    </script>
 </body>
 </html>

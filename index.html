@@ -3,274 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة دارك | عباس ماجد</title>
+    <title>تطبيق منيو حمادة الشامل - النسخة الملكية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* --- الأساسيات --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background-color: #0a0b1e; color: white; 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            line-height: 1.6; scroll-behavior: smooth;
-            overflow-x: hidden; cursor: none; /* إخفاء الماوس للتأثير الجديد */
+        body { font-family: 'Cairo', sans-serif; transition: all 0.3s ease; scroll-behavior: smooth; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* أنيميشن الدخول */
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .scale-in { animation: scaleIn 0.3s ease-out; }
+
+        /* زر الحظ - نبض */
+        .lucky-button {
+            background: linear-gradient(45deg, #ff930f, #ff1b6b);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 27, 107, 0.7); }
+            70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(255, 27, 107, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 27, 107, 0); }
         }
 
-        /* 1. شريط تقدم القراءة */
-        #progress-bar {
-            position: fixed; top: 0; left: 0; height: 4px;
-            background: linear-gradient(90deg, #a855f7, #2dd4bf);
-            width: 0%; z-index: 10000; transition: width 0.1s;
+        /* وضع الليلي */
+        .dark-mode { background-color: #121212 !important; color: #fff; }
+        .dark-mode .bg-white { background-color: #1e1e1e !important; border-color: #333; }
+        .dark-mode .text-gray-800 { color: #fff !important; }
+        .dark-mode .bg-gray-50 { background-color: #121212 !important; }
+        .dark-mode .bg-gray-100 { background-color: #2d2d2d !important; color: #fff; }
+
+        /* تذكرة الخصم */
+        .badge-discount {
+            position: absolute; top: -5px; left: -5px;
+            background: #ef4444; color: white; padding: 2px 8px;
+            border-radius: 10px; font-size: 10px; font-weight: bold;
+            z-index: 10; transform: rotate(-10deg);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        /* 2. خلفية النجوم */
-        .stars-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; overflow: hidden; background: radial-gradient(circle at center, #1b1e3f 0%, #0a0b1e 100%);
-        }
-        .star {
-            position: absolute; background: white; border-radius: 50%;
-            animation: moveStars linear infinite, fadeInOut 5s infinite;
-        }
-        @keyframes moveStars { from { transform: translateY(0); } to { transform: translateY(-100vh); } }
-        @keyframes fadeInOut { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
-
-        /* 3. تأثير الماوس المضيء */
-        .cursor-glow {
-            position: fixed; width: 20px; height: 20px;
-            background: #a855f7; border-radius: 50%;
-            pointer-events: none; transform: translate(-50%, -50%);
-            z-index: 9999; filter: blur(5px); box-shadow: 0 0 15px #a855f7, 0 0 30px #6366f1;
-            transition: transform 0.1s ease;
-        }
-
-        .main-container { 
-            position: relative; min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center; 
-            padding: 20px; z-index: 5;
-        }
-
-        /* 4. تأثير الزجاج (Glassmorphism) */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            border-radius: 20px; padding: 30px;
-            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .glass-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: #a855f7;
-            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.2);
-        }
-
-        /* الهيدر والعناوين */
-        .navbar { width: 100%; max-width: 1000px; text-align: center; padding: 20px; margin-bottom: 50px; }
-        .logo { font-size: 2.2rem; font-weight: 800; color: #a855f7; text-shadow: 0 0 15px #a855f7; }
-
-        .hero-content { text-align: center; max-width: 800px; margin-bottom: 60px; }
-        .main-title { font-size: 3rem; margin-bottom: 15px; }
-        .highlight { color: #a855f7; }
-
-        /* 5. تأثير الكتابة الآلية */
-        .typewriter { color: #2dd4bf; font-weight: bold; border-left: 3px solid #a855f7; padding-left: 5px; }
-
-        .cta-button {
-            margin-top: 30px; background: linear-gradient(45deg, #a855f7, #6366f1);
-            color: white; padding: 15px 40px; border-radius: 50px;
-            text-decoration: none; font-weight: bold; display: inline-block;
-            box-shadow: 0 10px 20px rgba(168, 85, 247, 0.3); transition: 0.3s;
-        }
-
-        /* قسم الإحصائيات مع عداد */
-        .stats-grid { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 20px; width: 100%; max-width: 900px; margin-bottom: 80px;
-        }
-        .stat-num { font-size: 2.8rem; font-weight: bold; color: #a855f7; display: block; }
-
-        /* قسم المهارات (المحذوف سابقاً تم إرجاعه) */
-        .skills-section { width: 100%; max-width: 1000px; text-align: center; margin-bottom: 80px; }
-        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 40px; }
-        .skill-item h3 { color: #2dd4bf; margin-bottom: 12px; font-size: 1.4rem; }
-        .skill-item p { color: #94a3b8; font-size: 1rem; }
-
-        .social-links { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-        .social-item { 
-            padding: 15px 35px; border-radius: 15px; text-decoration: none; color: white;
-            font-weight: bold; transition: 0.3s; background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .social-item:hover { background: #a855f7; transform: scale(1.1); }
-
-        /* 6. التنبيه (Toast) */
-        #welcome-toast {
-            position: fixed; bottom: -100px; left: 20px; background: #a855f7;
-            padding: 15px 25px; border-radius: 10px; transition: 0.5s; z-index: 10001;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        #welcome-toast.show { bottom: 20px; }
-
+        .modal-active { display: flex !important; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 pb-44" id="mainBody">
 
-    <div id="progress-bar"></div>
-    <div class="stars-container"></div>
-    <div class="cursor-glow"></div>
-    <div id="welcome-toast">مرحباً بك في منصة دارك! 🚀</div>
-
-    <div class="main-container">
-        <nav class="navbar">
-            <div class="logo">DARK 101</div>
-        </nav>
-
-        <section class="hero-content">
-            <h1 class="main-title">أنا <span class="highlight">عباس ماجد</span></h1>
-            <div style="font-size: 1.6rem; margin-bottom: 20px;">
-                محترف في <span class="typewriter" id="typewriter"></span>
+    <header class="bg-white p-4 sticky top-0 z-50 shadow-sm border-b border-gray-100">
+        <div class="max-w-md mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-orange-200 rotate-3">
+                        <span class="font-black text-xl italic">ح</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-black text-gray-800">منيو حمادة</h1>
+                        <p class="text-[10px] text-orange-500 font-bold uppercase tracking-widest">Premium Service</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleDarkMode()" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center active:scale-90 transition-all">🌙</button>
+                    <div class="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs font-bold border border-orange-100">طاولة 1</div>
+                </div>
             </div>
-            <p style="color: #94a3b8; font-size: 1.1rem;">أحول الأفكار المعقدة إلى واجهات رقمية بسيطة ومبهرة.</p>
-            <a href="https://t.me/D_8_5" class="cta-button">تواصل معي الآن</a>
-        </section>
 
-        <div class="stats-grid">
-            <div class="glass-card">
-                <span class="stat-num" data-target="3">0</span>
-                <span>سنوات الخبرة</span>
-            </div>
-            <div class="glass-card">
-                <span class="stat-num" data-target="36">0</span>
-                <span>مشروع منجز</span>
-            </div>
-            <div class="glass-card">
-                <span class="stat-num" data-target="21">0</span>
-                <span>عميل سعيد</span>
+            <div class="relative group">
+                <input type="text" id="searchInput" onkeyup="filterMenu()" placeholder="شنو ببالك تاكل اليوم؟" 
+                       class="w-full bg-gray-100 border-none rounded-2xl py-3 pr-12 pl-4 text-sm focus:ring-2 focus:ring-orange-500 transition-all outline-none">
+                <span class="absolute right-4 top-3 text-gray-400 text-lg">🔍</span>
             </div>
         </div>
+    </header>
 
-        <section class="skills-section">
-            <h2 style="font-size: 2.2rem; margin-bottom: 10px;">مهاراتي</h2>
-            <div class="skills-grid">
-                <div class="glass-card skill-item">
-                    <h3>تطوير الويب</h3>
-                    <p>بناء مواقع سريعة ومتجاوبة باستخدام أحدث التقنيات البرمجية العالمية.</p>
-                </div>
-                <div class="glass-card skill-item">
-                    <h3>التصميم الإبداعي</h3>
-                    <p>واجهات مستخدم (UI/UX) جذابة وسهلة الاستخدام تضمن أفضل تجربة للزائر.</p>
-                </div>
-                <div class="glass-card skill-item">
-                    <h3>الأداء والسرعة</h3>
-                    <p>تحسين المواقع لتتصدر نتائج البحث (SEO) وتعمل بلمح البصر على كافة الأجهزة.</p>
-                </div>
+    <main class="max-w-md mx-auto p-4">
+        
+        <div class="mb-6">
+            <button onclick="pickLuckyFood()" class="lucky-button w-full py-4 rounded-2xl text-white font-black shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <span>🎲</span>
+                <span>محتار شتاكل؟ خل حمادة يختارلك!</span>
+            </button>
+        </div>
+
+        <div class="flex gap-2 overflow-x-auto mb-6 no-scrollbar py-2">
+            <button onclick="filterType('all')" class="bg-orange-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg shadow-orange-100 whitespace-nowrap">الكل</button>
+            <button onclick="filterType('مندي')" class="bg-white text-gray-500 border border-gray-100 px-6 py-2 rounded-xl text-sm font-bold whitespace-nowrap">المندي</button>
+            <button onclick="filterType('شاورما')" class="bg-white text-gray-500 border border-gray-100 px-6 py-2 rounded-xl text-sm font-bold whitespace-nowrap">الشاورما</button>
+            <button onclick="filterType('مقبلات')" class="bg-white text-gray-500 border border-gray-100 px-6 py-2 rounded-xl text-sm font-bold whitespace-nowrap">المقبلات</button>
+            <button onclick="filterType('مشروب')" class="bg-white text-gray-500 border border-gray-100 px-6 py-2 rounded-xl text-sm font-bold whitespace-nowrap">المشروبات</button>
+        </div>
+
+        <div id="menu-container" class="space-y-4">
             </div>
-        </section>
+    </main>
 
-        <section style="text-align:center; margin-bottom: 100px;">
-            <h2 style="margin-bottom: 30px;">تابعني على</h2>
-            <div class="social-links">
-                <a href="https://t.me/D_8_5" class="social-item">Telegram</a>
-                <a href="https://www.tiktok.com/@d_8_98" class="social-item">TikTok</a>
+    <div class="fixed bottom-36 left-6 z-[60]">
+        <button onclick="callForBill()" class="w-14 h-14 bg-white text-gray-800 rounded-full shadow-2xl border border-gray-100 flex items-center justify-center text-2xl active:scale-90 transition-all hover:bg-gray-50">
+            🧾
+        </button>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 p-6 bg-white/80 backdrop-blur-xl border-t border-gray-100 rounded-t-[2.5rem] shadow-2xl z-50">
+        <div class="max-w-md mx-auto flex items-center justify-between gap-4">
+            <div class="flex flex-col">
+                <span class="text-gray-400 text-xs font-bold uppercase">المجموع الكلي</span>
+                <span id="totalPrice" class="text-2xl font-black text-gray-800">0 <span class="text-xs">د.ع</span></span>
             </div>
-        </section>
+            <button onclick="confirmOrder()" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-2xl font-bold shadow-xl shadow-orange-200 flex justify-center items-center gap-2 active:scale-95 transition-all">
+                <span>تأكيد الطلب</span>
+                <span id="itemCount" class="bg-white/20 px-2 py-0.5 rounded-lg text-xs">0 قطع</span>
+            </button>
+        </div>
+    </div>
 
-        <footer style="opacity: 0.4; font-size: 0.9rem;">© 2026 منصة دارك | عباس ماجد</footer>
+    <div id="successModal" class="fixed inset-0 bg-black/60 z-[100] hidden items-center justify-center p-6 backdrop-blur-md">
+        <div class="bg-white w-full max-w-xs rounded-[3rem] p-10 text-center shadow-2xl scale-in">
+            <div class="text-6xl mb-4">✅</div>
+            <h2 class="text-2xl font-black text-gray-800 mb-2">عاشت إيدك!</h2>
+            <p class="text-gray-500 text-sm mb-6">طلبك صار بالمطبخ، دقايق ويكون عندك يا بطل.</p>
+            <button onclick="closeModal()" class="w-full bg-orange-500 text-white py-4 rounded-2xl font-bold shadow-lg shadow-orange-100">تم</button>
+        </div>
     </div>
 
     <script>
-        // 1. توليد النجوم
-        const starsContainer = document.querySelector('.stars-container');
-        for (let i = 0; i < 150; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            const size = Math.random() * 3 + 'px';
-            star.style.width = size; star.style.height = size;
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            starsContainer.appendChild(star);
+        // قاعدة البيانات الشاملة
+        const foods = [
+            { id: 1, name: "مندي لحم", price: 18000, type: "مندي", img: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=200", stars: 5, time: "25 دقيقة" },
+            { id: 2, name: "مندي دجاج كامل", price: 15000, type: "مندي", img: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=200", stars: 5, time: "20 دقيقة" },
+            { id: 3, name: "مندي دجاج نص", price: 8000, type: "مندي", img: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=200", stars: 4, time: "15 دقيقة" },
+            { id: 4, name: "شاورما لحم (عرض)", price: 2500, type: "شاورما", img: "https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?w=200", stars: 4, time: "5 دقيقة", discount: "خصم %20" },
+            { id: 5, name: "شاورما دجاج", price: 2000, type: "شاورما", img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=200", stars: 4, time: "5 دقيقة" },
+            { id: 6, name: "باذنجانية ملكية", price: 1500, type: "مقبلات", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=200", stars: 5, time: "2 دقيقة" },
+            { id: 7, name: "مقبلات تفاحية", price: 1500, type: "مقبلات", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=200", stars: 4, time: "2 دقيقة" },
+            { id: 8, name: "بيبسي بارد", price: 500, type: "مشروب", img: "https://images.unsplash.com/photo-1629203851022-39c6f254689d?w=200", stars: 5, time: "1 دقيقة" },
+            { id: 9, name: "ماء معدني", price: 250, type: "مشروب", img: "https://images.unsplash.com/photo-1564419320461-6870880221ad?w=200", stars: 5, time: "1 دقيقة" }
+        ];
+
+        let cart = {};
+
+        // وظيفة عرض المنيو
+        function renderMenu(items = foods) {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = items.map(food => `
+                <div class="food-card bg-white rounded-[2rem] p-3 shadow-sm border border-gray-100 flex items-center gap-4 relative transition-all active:scale-[0.98]">
+                    ${food.discount ? `<span class="badge-discount">${food.discount}</span>` : ''}
+                    <img src="${food.img}" class="w-24 h-24 rounded-[1.5rem] object-cover shadow-md">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-gray-800 font-bold text-lg leading-tight">${food.name}</h3>
+                            <span class="text-[10px] text-gray-400 font-bold">🕒 ${food.time}</span>
+                        </div>
+                        <div class="flex text-yellow-400 text-[10px] mb-1">
+                            ${'★'.repeat(food.stars)}${'☆'.repeat(5-food.stars)}
+                        </div>
+                        <p class="text-orange-600 font-black text-sm">${food.price.toLocaleString()} د.ع</p>
+                        <div class="flex items-center gap-3 mt-2">
+                            <button onclick="updateQty(${food.id}, -1)" class="w-9 h-9 bg-gray-100 rounded-xl font-bold flex items-center justify-center text-gray-600 active:bg-gray-200">-</button>
+                            <span id="qty-${food.id}" class="font-bold text-sm w-4 text-center">${cart[food.id] || 0}</span>
+                            <button onclick="updateQty(${food.id}, 1)" class="w-9 h-9 bg-orange-500 text-white rounded-xl font-bold flex items-center justify-center shadow-lg shadow-orange-100 active:bg-orange-600">+</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // 2. حركة الماوس المضيء
-        const cursor = document.querySelector('.cursor-glow');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
+        // تحديث الكميات والحسابات
+        function updateQty(id, change) {
+            cart[id] = (cart[id] || 0) + change;
+            if (cart[id] < 0) cart[id] = 0;
+            
+            const qtyElement = document.getElementById(`qty-${id}`);
+            if(qtyElement) qtyElement.innerText = cart[id];
+            calculateTotal();
+        }
 
-        // 3. تأثير الكتابة الآلية
-        const words = ["تطوير الويب", "التصميم الإبداعي", "برمجة المواقع", "UI/UX Design"];
-        let wordIndex = 0; let charIndex = 0; let isDeleting = false;
-        const typeTarget = document.getElementById('typewriter');
-
-        function type() {
-            const currentWord = words[wordIndex];
-            if (isDeleting) {
-                typeTarget.textContent = currentWord.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                typeTarget.textContent = currentWord.substring(0, charIndex + 1);
-                charIndex++;
+        function calculateTotal() {
+            let total = 0;
+            let count = 0;
+            for (const id in cart) {
+                const food = foods.find(f => f.id == id);
+                if(food) {
+                    total += food.price * cart[id];
+                    count += cart[id];
+                }
             }
+            document.getElementById('totalPrice').innerHTML = `${total.toLocaleString()} <span class="text-xs">د.ع</span>`;
+            document.getElementById('itemCount').innerText = `${count} قطع`;
+        }
 
-            if (!isDeleting && charIndex === currentWord.length) {
-                isDeleting = true; setTimeout(type, 2000);
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false; wordIndex = (wordIndex + 1) % words.length;
-                setTimeout(type, 500);
+        // الفلترة والبحث
+        function filterMenu() {
+            const text = document.getElementById('searchInput').value.toLowerCase();
+            renderMenu(foods.filter(f => f.name.includes(text)));
+        }
+
+        function filterType(type) {
+            const btns = document.querySelectorAll('.no-scrollbar button');
+            btns.forEach(b => {
+                b.classList.remove('bg-orange-500', 'text-white');
+                b.classList.add('bg-white', 'text-gray-500');
+            });
+            event.target.classList.replace('bg-white', 'bg-orange-500');
+            event.target.classList.replace('text-gray-500', 'text-white');
+
+            if(type === 'all') renderMenu(foods);
+            else renderMenu(foods.filter(f => f.type === type));
+        }
+
+        // المميزات الإضافية
+        function pickLuckyFood() {
+            const randomFood = foods[Math.floor(Math.random() * foods.length)];
+            alert(`حمادة يگولك جرب: ${randomFood.name} 😋، ماراح تندم!`);
+            updateQty(randomFood.id, 1);
+            renderMenu();
+        }
+
+        function callForBill() {
+            const total = document.getElementById('totalPrice').innerText;
+            if(total.startsWith("0")) alert("حمادة يگولك: اطلب شي أولاً وبعدين نحاسب! 😂");
+            else alert(`جارٍ تحضير الفاتورة بمبلغ ${total}... ثواني ويجيك الكارسون!`);
+        }
+
+        function toggleDarkMode() {
+            document.getElementById('mainBody').classList.toggle('dark-mode');
+        }
+
+        function confirmOrder() {
+            if (Object.values(cart).reduce((a, b) => a + b, 0) > 0) {
+                document.getElementById('successModal').classList.add('modal-active');
             } else {
-                setTimeout(type, isDeleting ? 100 : 200);
+                alert("سلتك فارغة يا طيب!");
             }
         }
-        type();
 
-        // 4. عداد الأرقام عند التحميل
-        const stats = document.querySelectorAll('.stat-num');
-        stats.forEach(stat => {
-            const updateCount = () => {
-                const target = +stat.getAttribute('data-target');
-                const count = +stat.innerText.replace('+', '');
-                const speed = target / 50;
-                if (count < target) {
-                    stat.innerText = Math.ceil(count + speed);
-                    setTimeout(updateCount, 40);
-                } else { stat.innerText = target + "+"; }
-            };
-            updateCount();
-        });
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('modal-active');
+            cart = {};
+            renderMenu();
+            calculateTotal();
+        }
 
-        // 5. شريط التقدم العلوي
-        window.onscroll = () => {
-            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            let scrolled = (winScroll / height) * 100;
-            document.getElementById("progress-bar").style.width = scrolled + "%";
-        };
-
-        // 6. رسالة الترحيب (Toast)
-        window.onload = () => {
-            setTimeout(() => { document.getElementById('welcome-toast').classList.add('show'); }, 2000);
-            setTimeout(() => { document.getElementById('welcome-toast').classList.remove('show'); }, 7000);
-        };
-
-        // 8. تأثير الشرارات عند الضغط (Particle Click)
-        document.addEventListener('click', (e) => {
-            for(let i=0; i<8; i++) {
-                const p = document.createElement('div');
-                p.style.position = 'fixed';
-                p.style.left = e.clientX + 'px';
-                p.style.top = e.clientY + 'px';
-                p.style.width = '5px'; p.style.height = '5px';
-                p.style.background = '#a855f7';
-                p.style.borderRadius = '50%';
-                p.style.pointerEvents = 'none';
-                p.animate([
-                    { transform: 'translate(0,0) scale(1)', opacity: 1 },
-                    { transform: `translate(${(Math.random()-0.5)*100}px, ${(Math.random()-0.5)*100}px) scale(0)`, opacity: 0 }
-                ], { duration: 500 });
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), 500);
-            }
-        });
+        // التشغيل الأولي
+        renderMenu();
     </script>
 </body>
 </html>

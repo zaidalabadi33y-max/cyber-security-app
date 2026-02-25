@@ -12,6 +12,7 @@
             --text: #333;
             --ai-blue: #0288d1;
             --success: #2e7d32;
+            --gold: #ffd700;
         }
 
         .dark-mode {
@@ -27,7 +28,7 @@
             margin: 0;
             padding: 15px;
             transition: 0.3s;
-            padding-bottom: 110px;
+            padding-bottom: 120px;
         }
 
         .header {
@@ -37,7 +38,7 @@
             margin-bottom: 15px;
         }
 
-        /* حاويات الأقسام */
+        /* حاويات الأقسام (القديمة + الجديدة) */
         .box {
             background: var(--card);
             border-radius: 20px;
@@ -70,15 +71,17 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 16px;
+            transition: 0.3s;
         }
 
         .btn-blue { background: var(--ai-blue); margin-top: 10px; }
+        .btn-gold { background: linear-gradient(45deg, #d4af37, #f1c40f); color: #000; }
 
-        #response, #exam-box {
+        #response, #exam-box, #ai-predictor, #summary-box {
             margin-top: 15px;
             padding: 15px;
-            background: #e3f2fd;
-            color: #0d47a1;
+            background: rgba(2, 136, 209, 0.1);
+            color: var(--text);
             border-radius: 12px;
             display: none;
             line-height: 1.7;
@@ -100,7 +103,30 @@
             text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             cursor: pointer;
+            border: 1px solid transparent;
         }
+
+        .tool-card:hover { border-color: var(--p-orange); }
+
+        /* قسم اختيار المادة */
+        .subject-selector {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sub-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: var(--card);
+            border: 1px solid #ddd;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .sub-btn.active { background: var(--p-orange); color: white; border: none; }
 
         /* الفوتر الثابت */
         .footer-action {
@@ -117,52 +143,96 @@
             box-shadow: 0 8px 25px rgba(255, 126, 32, 0.4);
             z-index: 100;
         }
+
+        /* ميزة التركيز */
+        .focus-timer {
+            text-align: center;
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 10px;
+            font-family: monospace;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h2 style="color:var(--p-orange); margin:0;">🎓 دوافير AI</h2>
+        <h2 style="color:var(--p-orange); margin:0;">🎓 دوافير AI Super</h2>
         <button onclick="document.body.classList.toggle('dark-mode')" style="background:none; border:none; font-size:24px;">🌙</button>
     </div>
 
+    <div class="subject-selector">
+        <button class="sub-btn active" onclick="setSubject('شامل')">شامل</button>
+        <button class="sub-btn" onclick="setSubject('إسلامية')">إسلامية</button>
+        <button class="sub-btn" onclick="setSubject('عربي')">عربي</button>
+        <button class="sub-btn" onclick="setSubject('رياضيات')">رياضيات</button>
+        <button class="sub-btn" onclick="setSubject('فيزياء')">فيزياء</button>
+        <button class="sub-btn" onclick="setSubject('كيمياء')">كيمياء</button>
+        <button class="sub-btn" onclick="setSubject('أحياء')">أحياء</button>
+        <button class="sub-btn" onclick="setSubject('إنكليزي')">إنكليزي</button>
+    </div>
+
     <div class="box">
-        <p style="margin-top:0; font-weight:bold;">🔍 حل الأسئلة الذكي:</p>
-        <textarea id="userInput" rows="3" placeholder="اكتب سؤالك أو موضوع تبي تفهمه..."></textarea>
-        <button class="btn" onclick="askAI('solve')">تحليل وحل السؤال ✨</button>
+        <p style="margin-top:0; font-weight:bold;">🔍 المحلل الذكي (كل المواد):</p>
+        <textarea id="userInput" rows="3" placeholder="اكتب سؤالك، مسألتك، أو نص تريد تلخيصه..."></textarea>
+        <button class="btn" onclick="askAI('solve')">تحليل وحل بذكاء ✨</button>
         <div id="response"></div>
     </div>
 
     <div class="tool-grid">
         <div class="tool-card" onclick="startExam()">
             <span style="font-size:25px;">📝</span><br>
-            <b>امتحان تجريبي</b>
+            <b>الامتحان التجريبي</b>
         </div>
-        <div class="tool-card" onclick="generateSchedule()">
-            <span style="font-size:25px;">📅</span><br>
-            <b>جدول دراسي</b>
+        <div class="tool-card" onclick="predictQuestions()">
+            <span style="font-size:25px;">🔮</span><br>
+            <b>توقعات 2026</b>
         </div>
+        <div class="tool-card" onclick="summarizeLec()">
+            <span style="font-size:25px;">📚</span><br>
+            <b>تلخيص ملزمة</b>
+        </div>
+        <div class="tool-card" onclick="startFocus()">
+            <span style="font-size:25px;">⏱️</span><br>
+            <b>تركيز عميق</b>
+        </div>
+    </div>
+
+    <div id="ai-predictor" class="box" style="border-color: var(--gold);">
+        <h4 style="color: #b8860b;">🔮 توقعات الـ AI للوزاري:</h4>
+        <div id="predict-content"></div>
     </div>
 
     <div id="exam-area" class="box" style="display:none; border-color: var(--ai-blue);">
-        <h4 id="exam-title">🎯 تحدي الذكاء: سأعطيك سؤالاً وزارياً..</h4>
+        <h4 id="exam-title">🎯 تحدي المعدل القوي:</h4>
         <div id="exam-question" style="margin-bottom:15px; font-style: italic;"></div>
         <textarea id="userAnswer" rows="3" placeholder="اكتب إجابتك هنا ليقوم الـ AI بتصحيحها..."></textarea>
-        <button class="btn btn-blue" onclick="askAI('grade')">تصحيح إجابتي ✅</button>
+        <button class="btn btn-blue" onclick="askAI('grade')">تصحيح الوزاري ✅</button>
         <div id="exam-feedback" style="margin-top:10px;"></div>
     </div>
 
-    <div class="box" style="background: #fff3e0; border: none; color: #e65100; font-size: 14px;">
-        💡 <b>نصيحة المنصة:</b> مراجعة المادة لمرة واحدة قبل النوم تزيد من نسبة التذكر للفجر بنسبة 40%.
+    <div class="box">
+        <h4 style="margin:0;">🎤 بوت التسميع (حفظ القصائد والتعاريف):</h4>
+        <p style="font-size:12px;">اضغط وابدأ التسميع، الـ AI سيصلح لك الكلمات الخطأ.</p>
+        <button class="btn btn-blue" style="background:#673ab7;" onclick="alert('ميزة المايكروفون تتطلب إذن المتصفح.. جاري الربط')">ابدأ التسميع الآن</button>
     </div>
 
-    <div class="footer-action" onclick="alert('جاري تحضير ملخصات الفصل الأول...')">
-        تصفح ملخصات الـ AI السريعة ⚡
+    <div class="footer-action" onclick="generateSchedule()">
+        توليد جدول "المعدل الكامل" لليوم 🚀
     </div>
 
     <script>
-        // مفتاح الـ API الخاص بك من الصور
+        // مفتاح الـ API
         const API_KEY = "AIzaSyBnN9GyclPQILVeB2HGDxjwlM1XKYJDUcs"; 
+        let currentSubject = "شامل";
+
+        function setSubject(sub) {
+            currentSubject = sub;
+            document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
 
         async function askAI(type) {
             let prompt = "";
@@ -171,18 +241,18 @@
             const resBox = document.getElementById('response');
             
             if (type === 'solve') {
-                if(!input) return alert("اكتب سؤالك أولاً!");
-                prompt = `أنت خبير تعليمي عراقي. حل هذا السؤال بدقة مع ذكر الملاحظات الوزارية: ${input}`;
+                if(!input) return alert("اكتب شيئاً للتحليل!");
+                prompt = `أنت بروفيسور عراقي خبير في مادة ${currentSubject}. حل هذا السؤال لضمان الدرجة الكاملة في الوزاري: ${input}`;
                 targetDiv = resBox;
             } else if (type === 'grade') {
                 const answer = document.getElementById('userAnswer').value;
                 const question = document.getElementById('exam-question').innerText;
-                prompt = `أنا طالب قمت بحل هذا السؤال: (${question}). إجابتي هي: (${answer}). قم بتصحيحها وإعطائي درجة من 10 ونصحية للتحسن.`;
+                prompt = `أنت مصحح وزاري. السؤال: (${question}). إجابة الطالب: (${answer}). أعطه درجة من 10 وصحح الأخطاء العلمية واللغوية بدقة.`;
                 targetDiv = document.getElementById('exam-feedback');
             }
 
             targetDiv.style.display = "block";
-            targetDiv.innerHTML = "🌀 الـ AI يفكر الآن... ثواني";
+            targetDiv.innerHTML = "🌀 الـ AI يراجع المنهج الآن...";
 
             try {
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
@@ -195,33 +265,59 @@
                 const data = await response.json();
                 const aiResponse = data.candidates[0].content.parts[0].text;
                 targetDiv.innerHTML = aiResponse.replace(/\n/g, '<br>');
-            } catch (e) {
-                targetDiv.innerHTML = "❌ حدث خطأ، تأكد من اتصال الإنترنت.";
-            }
+            } catch (e) { targetDiv.innerHTML = "❌ فشل الربط!"; }
         }
 
-        // ميزة الامتحان التجريبي
+        async function predictQuestions() {
+            const pBox = document.getElementById('ai-predictor');
+            const pContent = document.getElementById('predict-content');
+            pBox.style.display = "block";
+            pContent.innerHTML = "🔮 يحلل الـ AI الأسئلة من 2010 إلى 2025 ليتوقع لك...";
+            
+            const prompt = `بناءً على تكرار الأسئلة الوزارية لمادة ${currentSubject} في العراق، ما هي أهم 3 مواضيع مرشحة بقوة لعام 2026؟`;
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await response.json();
+                pContent.innerHTML = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
+            } catch(e) { pContent.innerHTML = "حدث خطأ في التوقعات."; }
+        }
+
         async function startExam() {
             const examArea = document.getElementById('exam-area');
             const qBox = document.getElementById('exam-question');
             examArea.style.display = "block";
-            qBox.innerHTML = "🌀 جاري اختيار سؤال وزاري عشوائي...";
+            qBox.innerHTML = `🌀 جاري سحب سؤال وزاري معقد في ${currentSubject}...`;
             
             try {
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: "أعطني سؤالاً وزارياً عراقياً واحداً فقط لمرحلة السادس الإعدادي في مادة عشوائية." }] }]
+                        contents: [{ parts: [{ text: `أعطني سؤالاً وزارياً عراقياً صبراً (فكري) لمادة ${currentSubject} للسادس الإعدادي.` }] }]
                     })
                 });
                 const data = await response.json();
                 qBox.innerHTML = data.candidates[0].content.parts[0].text;
-            } catch(e) { qBox.innerHTML = "فشل في تحميل السؤال."; }
+            } catch(e) { qBox.innerHTML = "فشل التحميل."; }
         }
 
         function generateSchedule() {
-            alert("📅 الـ AI يقترح عليك: 4 ساعات رياضيات صباحاً، وساعتين إسلامية قبل النوم.");
+            alert(`📅 تم بناء جدول المعدل 100:\n1. تركيز 3 ساعات على ${currentSubject}.\n2. مراجعة ملخصات الـ AI.\n3. حل 5 أسئلة وزارية.`);
+        }
+
+        function startFocus() {
+            alert("🚀 وضع التركيز العميق: سيتم كتم جميع الإشعارات (وهمياً) لمدة 45 دقيقة. ابدأ الآن!");
+        }
+
+        function summarizeLec() {
+            const input = document.getElementById('userInput').value;
+            if(!input) return alert("انسخ نص الملزمة في المربع الأعلى أولاً!");
+            askAI('solve');
+            alert("سيقوم الـ AI الآن بتلخيص النص الذي وضعته في خانة الحل.");
         }
     </script>
 </body>

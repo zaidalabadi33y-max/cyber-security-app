@@ -3,323 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر دارك الإلكتروني - DARK STORE</title>
+    <title>Logic-AI | المنصة الذكية لتعلم البرمجة</title>
     <style>
+        /* المتغيرات الأساسية والألوان */
         :root {
-            --primary-orange: #ff7e00;
-            --dark-bg: #1a1a1a;
-            --gradient-btn: linear-gradient(90deg, #ff512f 0%, #dd2476 100%);
-            --bg-color: #f8f9fa;
-            --text-color: #333;
-            --card-bg: #ffffff;
+            --primary-orange: #ff7e20;
+            --bg-light: #f8f9fa;
+            --card-white: #ffffff;
+            --text-main: #333;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --ai-blue: #0288d1;
+            --job-bg: #e3f2fd;
         }
 
-        body.dark-mode {
-            --bg-color: #121212;
-            --text-color: #e0e0e0;
-            --card-bg: #1e1e1e;
+        /* نمط الوضع الليلي (Dark Mode) */
+        .dark-mode {
+            --bg-light: #121212;
+            --card-white: #1e1e1e;
+            --text-main: #e0e0e0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.5);
+            --job-bg: #0d2137;
         }
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; overflow-x: hidden; transition: 0.3s; }
-        .container { max-width: 500px; margin: 0 auto; }
-        
-        .theme-toggle {
-            position: absolute; top: 20px; left: 20px;
-            background: var(--card-bg); border: 1px solid var(--primary-orange);
-            padding: 8px; border-radius: 50%; cursor: pointer; font-size: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1001;
-        }
-
-        .welcome-banner {
-            background: var(--dark-bg);
-            color: white;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0;
             padding: 20px;
-            border-radius: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            border-bottom: 4px solid var(--primary-orange);
+            transition: all 0.3s ease;
+            padding-bottom: 100px; /* مساحة للفوتر */
         }
-        .welcome-banner h1 { margin: 0; font-size: 22px; color: var(--primary-orange); }
-        .welcome-banner p { margin: 5px 0 0; font-size: 14px; opacity: 0.8; }
 
-        .search-container { margin-bottom: 15px; position: relative; }
-        #search-input { width: 100%; padding: 12px 15px; border-radius: 15px; border: 2px solid var(--primary-orange); background: var(--card-bg); color: var(--text-color); box-sizing: border-box; font-size: 14px; outline: none; }
+        /* الهيدر ولوحة التحكم السريعة */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-        .user-bar { background: var(--card-bg); padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-right: 5px solid var(--primary-orange); }
-        .wallet-amount { color: #28a745; font-weight: bold; }
+        .logo {
+            font-weight: bold;
+            font-size: 24px;
+            color: var(--primary-orange);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        .my-orders { background: var(--card-bg); padding: 10px; border-radius: 15px; margin-top: 10px; border: 1px dashed var(--primary-orange); display: none; }
-        .order-card { background: var(--bg-color); padding: 8px; border-bottom: 1px solid #444; margin-bottom: 5px; font-size: 13px; }
+        .stats-top {
+            font-size: 14px;
+            background: var(--card-white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
 
-        .product-card { background: var(--card-bg); border-radius: 20px; padding: 15px; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); cursor: pointer; position: relative; }
-        .product-img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; }
-        .price { color: var(--primary-orange); font-weight: bold; }
+        .dark-toggle {
+            cursor: pointer;
+            font-size: 22px;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
 
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); overflow-y: auto; }
-        .modal-content { background: var(--card-bg); color: var(--text-color); margin: 10% auto; padding: 25px; width: 85%; max-width: 400px; border-radius: 25px; text-align: center; }
+        /* شريط البحث */
+        .search-bar {
+            background: var(--card-white);
+            border-radius: 25px;
+            padding: 12px 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-        /* تعديل: لوحة الإدارة مخفية افتراضياً */
-        #admin-sidebar { position: fixed; right: -320px; top: 0; width: 300px; height: 100%; background: var(--card-bg); color: var(--text-color); z-index: 2000; transition: 0.4s ease-in-out; box-shadow: -5px 0 20px rgba(0,0,0,0.3); padding: 20px; overflow-y: auto; visibility: hidden; }
-        #admin-sidebar.active { right: 0; visibility: visible; }
-        .admin-section { background: rgba(255,126,0,0.05); padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid rgba(255,126,0,0.2); }
+        .search-bar input {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            color: var(--text-main);
+            font-size: 16px;
+        }
 
-        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; background: var(--bg-color); color: var(--text-color); }
-        .btn-main { background: var(--gradient-btn); color: white; border: none; padding: 12px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .btn-admin-action { background: #28a745; color: white; border: none; padding: 10px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        /* البانر التحفيزي الذكي */
+        .ai-banner {
+            background: linear-gradient(90deg, #ff512f 0%, #dd2476 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 18px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(221, 36, 118, 0.3);
+        }
+
+        /* رادار الوظائف (ميزة جديدة) */
+        #job-radar {
+            background: var(--job-bg);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px dashed var(--ai-blue);
+        }
+
+        .progress-bar {
+            background: #ccc;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: var(--ai-blue);
+            width: 45%;
+            height: 100%;
+            transition: width 1s ease;
+        }
+
+        /* تصنيفات المهارات */
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .cat-item {
+            background: var(--card-white);
+            padding: 8px 20px;
+            border-radius: 12px;
+            white-space: nowrap;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .cat-item.active {
+            background: var(--primary-orange);
+            color: white;
+            border-color: var(--primary-orange);
+        }
+
+        /* كروت الدروس بنمط المنيو المودرن */
+        .lesson-card {
+            background: var(--card-white);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .lesson-info { flex: 1; }
+        .lesson-info h3 { margin: 0; font-size: 18px; color: var(--text-main); }
+        .lesson-info p { margin: 5px 0; font-size: 13px; color: #888; }
         
-        .close-sidebar { float: left; font-weight: bold; cursor: pointer; color: red; background: #eee; padding: 5px 10px; border-radius: 50%; }
-        .logout-btn { background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-size: 11px; margin-top: 5px; }
+        .price-tag {
+            color: var(--primary-orange);
+            font-weight: bold;
+            margin: 8px 0;
+            display: block;
+        }
+
+        .btn-add {
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-add:active { transform: scale(0.9); }
+
+        .btn-pair {
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .lesson-img {
+            width: 85px;
+            height: 85px;
+            border-radius: 18px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        /* فقاعة ذكاء اصطناعي */
+        .ai-chat-bubble {
+            background: rgba(2, 136, 209, 0.1);
+            color: var(--ai-blue);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-top: 12px;
+            border-right: 4px solid var(--ai-blue);
+        }
+
+        /* الفوتر الثابت (زر الإجراء الرئيسي) */
+        .footer-action {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--primary-orange);
+            color: white;
+            text-align: center;
+            padding: 18px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 8px 25px rgba(255, 126, 32, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+        }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
-<button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-
-<div class="container">
-    <div class="welcome-banner">
-        <h1>متجر دارك الإلكتروني 💎</h1>
-        <p>مرحباً بك في عالم الخدمات الرقمية.. ثقة، سرعة، وأمان</p>
+    <div class="header">
+        <div class="logo"><span>🤖</span> Logic-AI</div>
+        <div class="stats-top">⭐ 1,250 نقطة</div>
+        <button class="dark-toggle" onclick="toggleDarkMode()" id="modeBtn">🌙</button>
     </div>
 
-    <div class="search-container">
-        <input type="text" id="search-input" placeholder="ابحث عن منتج..." oninput="searchProducts()">
+    <div class="search-bar">
+        <span>🔍</span>
+        <input type="text" placeholder="شنو ببالك تتعلم اليوم؟">
     </div>
 
-    <div id="user-bar" class="user-bar" style="display:none;">
-        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-            <div>
-                <span id="user-display-name"></span><br>
-                المحفظة: <span class="wallet-amount" id="user-balance">0</span> د.ع
-                <br><button class="logout-btn" onclick="logout()">تسجيل خروج</button>
-            </div>
-            <button onclick="openModal('deposit-modal')" style="background:var(--primary-orange); color:white; border:none; padding:8px 12px; border-radius:10px; cursor:pointer;">شحن +</button>
-        </div>
-        <div id="my-orders-section" class="my-orders">
-            <h5 style="margin:5px 0;">📦 منتجاتي المشتراة:</h5>
-            <div id="my-orders-list"></div>
-        </div>
+    <div class="ai-banner">
+        🎲 محتار تبدأ وين؟ خلي المعلم الذكي يختارلك!
     </div>
 
-    <div id="shop-display"></div>
-
-    <div id="admin-sidebar">
-        <span class="close-sidebar" onclick="toggleSidebar()">X</span>
-        <h3 style="margin-top:20px; color:var(--primary-orange);">لوحة تحكم الأدمن 🛠️</h3>
-        
-        <div class="admin-section">
-            <h4>💰 شحن رصيد مباشر</h4>
-            <input type="email" id="direct-charge-email" placeholder="إيميل الزبون">
-            <input type="number" id="direct-charge-amount" placeholder="المبلغ">
-            <button class="btn-admin-action" onclick="directCharge()">تم الشحن ✅</button>
+    <section id="job-radar">
+        <h4 style="margin: 0; color: var(--ai-blue);">📍 رادار الوظائف القريبة:</h4>
+        <p style="font-size: 13px; margin: 5px 0;">لقد أكملت مهارات كافية لـ <b>3 وظائف</b> في بابل!</p>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
         </div>
+    </section>
 
-        <div class="admin-section">
-            <h4>📥 طلبات الشحن المعلقة</h4>
-            <div id="requests-list"></div>
+    <div class="categories">
+        <div class="cat-item active">الكل</div>
+        <div class="cat-item">HTML/CSS</div>
+        <div class="cat-item">JavaScript</div>
+        <div class="cat-item">Python</div>
+        <div class="cat-item">تحديات AI</div>
+    </div>
+
+    <div class="lesson-card">
+        <div class="lesson-info">
+            <h3>هيكلية الويب (HTML5)</h3>
+            <p>⏱️ 15 دقيقة • مستوى 1</p>
+            <span class="price-tag">مجاني</span>
+            <div class="ai-chat-bubble">تلميح AI: تعلم كيف ترتب العناصر قبل تلوينها!</div>
+            <button class="btn-pair">🤖 برمج مع توأمك الذكي</button>
         </div>
-
-        <div class="admin-section">
-            <h4 id="form-title">إدارة المنتجات</h4>
-            <input type="hidden" id="edit-index">
-            <input type="text" id="p-name" placeholder="اسم المنتج">
-            <input type="number" id="p-price" placeholder="السعر">
-            <textarea id="p-specs" placeholder="المواصفات"></textarea>
-            <textarea id="p-auto-delivery" placeholder="محتوى التسليم التلقائي"></textarea>
-            <input type="text" id="p-img" placeholder="رابط الصورة">
-            <button class="btn-main" id="save-btn" onclick="saveProduct()">حفظ ونشر</button>
+        <div>
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174854.png" class="lesson-img" alt="html">
+            <br><br>
+            <button class="btn-add">+</button>
         </div>
     </div>
 
-    <div id="details-modal" class="modal">
-        <div class="modal-content">
-            <h3 id="det-title"></h3>
-            <p id="det-specs" style="color:#888;"></p>
-            <p class="price" id="det-price"></p>
-            <button class="btn-main" onclick="confirmPurchase()">شراء الآن (تسليم تلقائي)</button>
-            <button onclick="closeModals()" style="background:none; border:none; color:grey; margin-top:10px; cursor:pointer;">إلغاء</button>
+    <div class="lesson-card">
+        <div class="lesson-info">
+            <h3>صائد الأخطاء المنطقية</h3>
+            <p>⏱️ 20 دقيقة • تحدي مستمر</p>
+            <span class="price-tag">50 نقطة مكافأة</span>
+            <div class="ai-chat-bubble">AI Challenge: هل تستطيع اكتشاف 3 أخطاء في 60 ثانية؟</div>
+        </div>
+        <div>
+            <img src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png" class="lesson-img" alt="bug">
+            <br><br>
+            <button class="btn-add">+</button>
         </div>
     </div>
 
-    <div id="deposit-modal" class="modal">
-        <div class="modal-content">
-            <h3>شحن الحساب 💰</h3>
-            <p style="font-size:12px;">حول للرقم: <strong>07772955966</strong></p>
-            <input type="number" id="dep-amount" placeholder="المبلغ">
-            <input type="text" id="dep-sender-phone" placeholder="الرقم المحول منه">
-            <button class="btn-main" onclick="submitDepositRequest()">إرسال الطلب</button>
-            <button onclick="closeModals()" style="background:none; border:none; margin-top:10px;">إغلاق</button>
+    <div class="lesson-card">
+        <div class="lesson-info">
+            <h3>تحويل الرسم لكود (Snap)</h3>
+            <p>⏱️ ميزة تجريبية Beta</p>
+            <span class="price-tag">VIP</span>
+            <p style="font-size: 12px; color: var(--ai-blue);">📸 صور رسمتك والـ AI يبرمجها!</p>
+        </div>
+        <div>
+            <img src="https://cdn-icons-png.flaticon.com/512/1055/1055666.png" class="lesson-img" alt="camera">
+            <br><br>
+            <button class="btn-add">+</button>
         </div>
     </div>
 
-    <div id="auth-section" style="background:var(--card-bg); padding:20px; border-radius:20px; margin-top:10px;">
-        <h4 id="auth-title">تسجيل الدخول</h4>
-        <input type="text" id="reg-name" placeholder="الاسم" style="display:none;">
-        <input type="email" id="auth-email" placeholder="الجيميل">
-        <input type="password" id="auth-pass" placeholder="كلمة المرور">
-        <button class="btn-main" onclick="handleAuth()">دخول / تسجيل</button>
-        <p onclick="toggleAuth()" id="toggle-btn" style="text-align:center; font-size:12px; cursor:pointer; color:var(--primary-orange); margin-top:10px;">ليس لديك حساب؟ سجل</p>
+    <div class="footer-action">
+        بدء رحلة التعلم الذكية 🚀
     </div>
-</div>
 
-<script>
-    let products = JSON.parse(localStorage.getItem('h_store')) || [];
-    let users = JSON.parse(localStorage.getItem('h_users')) || [];
-    let requests = JSON.parse(localStorage.getItem('h_requests')) || [];
-    let currentUser = JSON.parse(localStorage.getItem('h_active')) || null;
-    let isSignup = false;
-    let selectedItem = {};
-
-    function toggleTheme() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-    }
-    if (localStorage.getItem('theme') === 'light') document.body.classList.remove('dark-mode');
-
-    function searchProducts() {
-        const term = document.getElementById('search-input').value.toLowerCase();
-        const filtered = products.filter(p => p.name.toLowerCase().includes(term));
-        renderShop(filtered);
-    }
-
-    function toggleAuth() {
-        isSignup = !isSignup;
-        document.getElementById('reg-name').style.display = isSignup ? 'block' : 'none';
-        document.getElementById('auth-title').innerText = isSignup ? 'حساب جديد' : 'تسجيل دخول';
-    }
-
-    function handleAuth() {
-        const email = document.getElementById('auth-email').value;
-        const pass = document.getElementById('auth-pass').value;
-        const name = document.getElementById('reg-name').value;
-
-        if (email === "ly987@gamil.com" && pass === "1487040062") {
-            currentUser = {name: "الأدمن", email: email, balance: 999999, isAdmin: true, orders: []};
-            localStorage.setItem('h_active', JSON.stringify(currentUser));
-            location.reload();
-            return;
-        }
-
-        if(isSignup) {
-            if(users.find(u => u.email === email)) return alert("الإيميل مسجل مسبقاً!");
-            users.push({name, email, pass, balance: 0, orders: []});
-            localStorage.setItem('h_users', JSON.stringify(users));
-            alert("تم التسجيل بنجاح!"); toggleAuth();
-        } else {
-            let user = users.find(u => u.email === email && u.pass === pass);
-            if(user) { 
-                currentUser = user; 
-                localStorage.setItem('h_active', JSON.stringify(user)); 
-                location.reload(); 
-            } else { alert("خطأ في بيانات الدخول!"); }
-        }
-    }
-
-    function logout() {
-        localStorage.removeItem('h_active');
-        location.reload();
-    }
-
-    function renderShop(dataToRender = products) {
-        const isAdminMode = currentUser && currentUser.isAdmin;
-        document.getElementById('shop-display').innerHTML = dataToRender.map((p, i) => `
-            <div class="product-card">
-                <img src="${p.img}" class="product-img" onclick="showDetails(${i})">
-                <div style="flex:1" onclick="showDetails(${i})">
-                    <h4 style="margin:0">${p.name}</h4>
-                    <p class="price">${p.price} د.ع</p>
-                </div>
-                ${isAdminMode ? `<div>
-                    <button class="btn-edit" onclick="editProduct(${i})">تعديل</button>
-                    <button class="btn-delete" onclick="deleteProduct(${i})">حذف</button>
-                </div>` : ''}
-            </div>
-        `).join('') || '<p style="text-align:center; opacity:0.5;">لا توجد منتجات</p>';
-        
-        if(currentUser) {
-            document.getElementById('user-bar').style.display='block';
-            document.getElementById('user-display-name').innerText = currentUser.name;
-            document.getElementById('user-balance').innerText = currentUser.balance.toLocaleString();
-            document.getElementById('auth-section').style.display='none';
-            
-            // التعديل: لا تظهر اللوحة إلا إذا كان أدمن
-            if(currentUser.isAdmin) {
-                document.getElementById('admin-sidebar').classList.add('active');
+    <script>
+        // وظيفة التبديل للوضع الليلي
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const btn = document.getElementById('modeBtn');
+            if(document.body.classList.contains('dark-mode')) {
+                btn.innerHTML = '☀️';
             } else {
-                document.getElementById('admin-sidebar').classList.remove('active');
+                btn.innerHTML = '🌙';
             }
-            renderMyOrders();
-        } else {
-            document.getElementById('admin-sidebar').classList.remove('active');
         }
-    }
 
-    function directCharge() {
-        const email = document.getElementById('direct-charge-email').value;
-        const amount = parseInt(document.getElementById('direct-charge-amount').value);
-        let user = users.find(u => u.email === email);
-        if(user && amount) {
-            user.balance += amount;
-            localStorage.setItem('h_users', JSON.stringify(users));
-            alert("تم شحن الرصيد بنجاح!");
-            location.reload();
-        } else { alert("المستخدم غير موجود!"); }
-    }
-
-    function renderMyOrders() {
-        const list = document.getElementById('my-orders-list');
-        if(currentUser.orders && currentUser.orders.length > 0) {
-            document.getElementById('my-orders-section').style.display = 'block';
-            list.innerHTML = currentUser.orders.map(o => `
-                <div class="order-card">
-                    <b>🛍️ ${o.name}:</b> <span style="color:var(--primary-orange);">${o.data}</span>
-                </div>
-            `).join('');
-        }
-    }
-
-    function confirmPurchase() {
-        if(!currentUser) return alert("يرجى تسجيل الدخول أولاً!");
-        if(currentUser.balance >= selectedItem.price) {
-            currentUser.balance -= selectedItem.price;
-            currentUser.orders.push({name: selectedItem.name, data: selectedItem.delivery});
-            let uIdx = users.findIndex(u => u.email === currentUser.email);
-            if(uIdx !== -1) users[uIdx] = currentUser;
-            localStorage.setItem('h_users', JSON.stringify(users));
-            localStorage.setItem('h_active', JSON.stringify(currentUser));
-            alert("✅ تم الشراء بنجاح!");
-            location.reload();
-        } else { alert("عذراً، رصيدك غير كافي!"); }
-    }
-
-    function saveProduct() {
-        const name = document.getElementById('p-name').value;
-        const price = parseInt(document.getElementById('p-price').value);
-        const specs = document.getElementById('p-specs').value;
-        const delivery = document.getElementById('p-auto-delivery').value;
-        const img = document.getElementById('p-img').value;
-        const editIdx = document.getElementById('edit-index').value;
-        if(name && price) {
-            const pData = {name, price, specs, delivery, img};
-            if(editIdx !== "") products[editIdx] = pData; else products.push(pData);
-            localStorage.setItem('h_store', JSON.stringify(products));
-            location.reload();
-        }
-    }
-
-    function showDetails(i) {
-        selectedItem = products[i];
-        document.getElementById('det-title').innerText = selectedItem.name;
-        document.getElementById('det-specs').innerText = selectedItem.specs;
-        document.getElementById('det-price').innerText = selectedItem.price + " د.ع";
-        openModal('details-modal');
-    }
-
-    function toggleSidebar() { document.getElementById('admin-sidebar').classList.toggle('active'); }
-    function openModal(id) { document.getElementById(id).style.display='block'; }
-    function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
-
-    renderShop();
-</script>
+        // إضافة لمسة تفاعلية للبانر العشوائي
+        document.querySelector('.ai-banner').onclick = function() {
+            alert('🤖 الـ AI يقترح عليك البدء بدرس "منطق الجافا سكريبت" اليوم!');
+        };
+    </script>
 </body>
 </html>
